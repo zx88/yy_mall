@@ -27,12 +27,19 @@
 					@click="handleSwiper"
 				></u-swiper>
 				<!-- 分类导航 -->
-				<u-card :show-foot="false" :show-head="false" margin="20rpx" padding="0">
-					<view slot="body" class="cate">
-						<navigator v-for="item in catesList" :key="item.name" open-type="switchTab" url="../category/index">
-							<image mode="widthFix" :src="item.image_src"></image>
+				<u-card :show-foot="false" :show-head="false" margin="20rpx" padding="10">
+					<scroll-view class="cate" slot="body" scroll-x="true">
+						<!--内容区域-->
+						<navigator v-for="item in catesList[0]" :key="item.name" open-type="switchTab" :url="`../category/index`">
+							<image mode="widthFix" :src="item.icon"></image>
+							<text>{{ item.name }}</text>
 						</navigator>
-					</view>
+						<view></view>
+						<navigator v-for="item2 in catesList[1]" :key="item2.name" open-type="switchTab" :url="`../category/index`">
+							<image mode="widthFix" :src="item2.icon"></image>
+							<text>{{ item2.name }}</text>
+						</navigator>
+					</scroll-view>
 				</u-card>
 			</view>
 			<!-- 推荐 -->
@@ -99,9 +106,20 @@ export default {
 		},
 		// 获取分类导航
 		async getCateList() {
-			const res = await this.$requests({ url: '/home/catitems' });
-			if (res.meta.status !== 200) return this.$util.msg('获取导航数据失败');
-			this.catesList = res.message;
+			const res = await this.$request({ url: '/shop/goods/category/all' });
+			var catesList = res.data.filter(v => v.pid == 0);
+			if (res.code !== 0) return this.$util.msg('获取导航数据失败');
+			let toplist = [];
+			let bottomlist = [];
+			catesList.forEach((v, i) => {
+				if (i % 2 == 0) {
+					toplist.push(v);
+				} else {
+					bottomlist.push(v);
+				}
+			});
+			this.catesList[0] = toplist.slice(0, 9);
+			this.catesList[1] = bottomlist.slice(0, 9);
 		},
 		// 获取楼层数据
 		async getFloorList() {
@@ -148,12 +166,21 @@ export default {
 	padding-top: 20rpx;
 	background-image: linear-gradient(180deg, rgb(139, 141, 255), rgb(245, 245, 245));
 	.cate {
-		display: flex;
-		justify-content: space-around;
+		white-space: nowrap;
+		height: 280rpx;
 		navigator {
-			padding: 20rpx;
+			display: inline-block;
+			text-align: center;
+			width: 139rpx;
+			height: 140rpx;
+			font-size: 26rpx;
+			// padding: 10rpx 15rpx;
 			image {
-				width: 120rpx;
+				width: 110rpx;
+			}
+			text {
+				display: block;
+				text-align: center;
 			}
 		}
 	}
