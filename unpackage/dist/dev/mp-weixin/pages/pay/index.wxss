@@ -63,7 +63,7 @@
 .addr_sec .bg_line.data-v-32f2f1fc {
   position: absolute;
   left: 0;
-  bottom: -16rpx;
+  bottom: -21rpx;
   width: 100%;
   height: 4rpx;
 }
@@ -109,6 +109,9 @@
 }
 .cart_item .cart_info_wrap .goods_attr.data-v-32f2f1fc {
   color: #a5a5a5;
+}
+.cart_item .cart_info_wrap .goods_attr text.data-v-32f2f1fc {
+  font-size: 24rpx;
 }
 .cart_item .cart_info_wrap .goods_price_wrap.data-v-32f2f1fc {
   display: -webkit-box;

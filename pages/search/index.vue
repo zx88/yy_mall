@@ -17,11 +17,15 @@
 		<!-- 热门搜索 -->
 		<view class="hot_search" v-if="!searchList.length">
 			<view class="hot_title"><u-icon name="heart" label="热门搜索"></u-icon></view>
-			<view class="hot_list"><text v-for="(item, index) in 8" :key="index">龙泉宝剑</text></view>
+			<view class="hot_list">
+				<text @click="handleHistoryBtn(hotxt)" v-for="hotxt in hotList" :key="hotxt">{{hotxt}}</text>
+			</view>
 		</view>
 		<!-- 搜索内容 -->
 		<view class="search_content">
-			<navigator url="" class="search_item" v-for="item in searchList" :key="item.goods_id">{{ item.goods_name }}</navigator>
+			<navigator :url="`../goods_detail/index?id=${item.id}`" class="search_item" v-for="item in searchList" :key="item.id">
+				{{ item.name }}
+			</navigator>
 		</view>
 
 		<!-- 删除历史确认框 -->
@@ -34,6 +38,7 @@ export default {
 	data() {
 		return {
 			searchList: [],
+			hotList: ['南极人', '小米', '三星', '外套', '男士','伞'],
 			historyList: [],
 			inpValue: '',
 			isDelHistory: false
@@ -57,7 +62,7 @@ export default {
 		// 点击搜索按钮
 		handleInput(e) {
 			const value = e;
-			if (!value.trim()) return uni.showToast({ icon: 'none', title: '请先输入关键字' });
+			if (!value.trim()) return this.$util.msg('请先输入关键字');
 			let clonehistoryList = [...this.historyList];
 			clonehistoryList.unshift(value);
 			uni.setStorage({
@@ -80,11 +85,12 @@ export default {
 			this.inpValue = e;
 			this.getsearchList(e);
 		},
-		// 获取搜索列表
+		// 获取搜索列表/{domain}/shop/goods/list/v2
 		async getsearchList(val) {
-			const res = await this.$requests({ url: '/goods/qsearch', data: { query: val } });
-			if (res.meta.status !== 200 || res.message.length === 0) return uni.showToast({ icon: 'none', title: '没有搜索到数据!' });
-			this.searchList = res.message;
+			const res = await this.$request({ url: '/shop/goods/list/v2', method: 'post', data: { k: val } });
+			if (res.code !== 0) return this.$util.msg('没有搜索到结果!');
+			this.searchList = res.data.result;
+			console.log(res);
 		}
 	}
 };
@@ -136,6 +142,7 @@ export default {
 	}
 }
 .search_content {
+	background-color: #18b566;
 	padding: 20rpx;
 	.search_item {
 		background-color: #fff;

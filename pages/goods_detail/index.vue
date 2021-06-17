@@ -1,33 +1,33 @@
 <template>
-	<Loading v-if="!goodsSkuList.length"></Loading>
-	<view v-else>
+	<!-- <Loading v-if="!goodsSkuList.length"></Loading> -->
+	<view>
 		<!-- 货物图片轮播 -->
 		<view class="detail_swiper">
-			<swiper indicator-active-color="#EA4200" indicator-dots autoplay :interval="3000" :duration="1000" circular>
-				<swiper-item v-for="(item, index) in goodsDetail.pics2" :key="index" @click="handlePrevewImage(item)">
-					<view class="swiper-item"><image :src="item" mode="widthFix"></image></view>
+			<swiper indicator-active-color="#ff0000" indicator-color="#d8d8d8" indicator-dots autoplay :interval="3000" :duration="1000" circular>
+				<swiper-item v-for="item in goodsImgList" :key="item.id" @click="handlePrevewImage(item.pic)">
+					<view class="swiper-item"><image :src="item.pic" mode="widthFix"></image></view>
 				</swiper-item>
 			</swiper>
 		</view>
-		<!-- 货物标题价格 -->
+		<!-- 货物描述 -->
 		<view class="goods_describe_box">
-			<view class="goods_name">{{ goodsDetail.basicInfo.name }}{{ goodsDetail.basicInfo.name }}</view>
+			<view class="goods_name">{{ goodsInfo.name }}{{ goodsInfo.name }}</view>
 			<view class="goods_price">
-				<text>￥{{ goodsDetail.basicInfo.minPrice }}</text>
-				<text class="goods_price_old">￥{{ goodsDetail.basicInfo.originalPrice }}</text>
+				<text>￥{{ goodsInfo.minPrice }}</text>
+				<text class="goods_price_old">￥{{ goodsInfo.originalPrice }}</text>
 				<view class="goods_price_tag">免运费</view>
 			</view>
 			<view class="goods_other">
-				<view class="goods_sales">销量:{{ goodsDetail.basicInfo.numberSells }}</view>
-				<view class="goods_stock">库存:{{ goodsDetail.basicInfo.stores }}</view>
-				<view class="goods_text">浏览量:{{ goodsDetail.basicInfo.views }}</view>
+				<view class="goods_sales">销量:{{ goodsInfo.numberSells }}</view>
+				<view class="goods_stock">库存:{{ goodsInfo.stores }}</view>
+				<view class="goods_text">浏览量:{{ goodsInfo.views }}</view>
 			</view>
 			<u-cell-group>
 				<u-cell-item title="购买类型" :value="skuDetail.propertyChildNames" @click="isAttrPopup = true"></u-cell-item>
 				<u-cell-item title="优惠卷" value="领取优惠卷" :value-style="{ color: '#e93b3d' }"></u-cell-item>
 				<u-cell-item title="服务" value="七天无理由退货,假一赔十!" :arrow="false"></u-cell-item>
 				<u-cell-item
-					bg-color="rgba(234, 66, 0, 0.1)"
+					bg-color="rgba(255, 85, 127, 0.1)"
 					icon="share"
 					title="发给好友看看吧!"
 					value="立即分享"
@@ -43,7 +43,7 @@
 		<view class="goods_info">
 			<u-divider height="90" border-color="#545454" color="#545454">图文详情</u-divider>
 			<!-- 富文本 -->
-			<u-parse :html="goodsDetail.content"></u-parse>
+			<u-parse :html="goodsContent"></u-parse>
 			<!-- <rich-text :nodes="goodsDetail.goods_introduce"></rich-text> -->
 		</view>
 
@@ -73,21 +73,21 @@
 		<u-popup v-model="isAttrPopup" closeable border-radius="10" mode="bottom" @close="query.number = 1">
 			<view class="popup_attr">
 				<view class="goods_des">
-					<view class="goods_des_img"><image :src="goodsDetail.basicInfo.pic" mode="widthFix"></image></view>
+					<view class="goods_des_img"><image :src="goodsInfo.pic" mode="widthFix"></image></view>
 					<view class="goods_des_txt">
 						<view class="goods_pic">￥{{ skuDetail.price }}</view>
 						<view class="goods_stk">库存: {{ skuDetail.stores }}</view>
 						<view class="goods_atr">规格: {{ skuDetail.propertyChildNames }}</view>
 					</view>
 				</view>
-				<view class="goods_attr" v-for="(item, index) in goodsProperties" :key="index">
+				<view class="goods_attr" v-for="(item, index) in goodsProperties" :key="item.id">
 					<view class="title">{{ item.name }}</view>
 					<view class="option">
 						<text
-							:class="{ active: isActive[index] && isActive[index] === item2.id }"
-							@click="handleAttr(index, item.id, item2.id)"
 							v-for="(item2, index2) in item.childsCurGoods"
-							:key="index2"
+							:key="item2.id"
+							:class="{ active: isActive[index] === item2.id }"
+							@click="handleAttr(index, item.id, item2.id)"
 						>
 							{{ item2.name }}
 						</text>
@@ -95,7 +95,7 @@
 				</view>
 				<view class="goods_num">
 					<text>数量</text>
-					<u-number-box v-model="query.number"></u-number-box>
+					<u-number-box :min="1" v-model="query.number"></u-number-box>
 				</view>
 				<view class="goods_btn">
 					<view class="cart_btn" @click="handleCartAdd">加入购物车</view>
@@ -110,20 +110,22 @@
 export default {
 	data() {
 		return {
-			goodsDetail: {},
-			goodsProperties: [], //规格
-			goodsSkuList: [], //库存清单
+			goodsDetail: {}, //物品数据对象
+			goodsImgList: [], //轮播图列表
+			goodsInfo: {}, //货物信息
+			goodsContent: '', //详细描述
+			goodsProperties: [], //每种规格的数组
+			goodsSkuList: [], //全部规格组合列表
 			isCollect: false, //是否收藏
-			isAttrPopup: false,
+			isAttrPopup: false, //弹出规格选择
 			query: {
 				goodsId: 0,
 				number: 1,
 				sku: []
-			},
-			isActive: [],
-			skuDetail: {}, //当前选中规格对象
-			skuArr: [], //当前选中规格数组
-			propertyChildIds: ''
+			}, //加入购物车表单
+			isActive: [], //选中的规格id
+			skuDetail: {}, //选中规格对象
+			skuArr: [] //当前选中规格数组
 		};
 	},
 	onLoad(options) {
@@ -148,10 +150,28 @@ export default {
 		}
 	},
 	methods: {
+		// 获取商品数据
+		async getGoodsDetail(id) {
+			const res = await this.$request({ url: '/shop/goods/detail?id=' + id });
+			if (res.code !== 0) return this.$util.msg('获取数据失败');
+			let { basicInfo, pics, properties, skuList, content } = res.data;
+			this.goodsImgList = pics;
+			this.goodsInfo = basicInfo;
+			this.goodsContent = content;
+			this.goodsProperties = properties;
+			this.goodsSkuList = skuList;
+			// 首次进入默认选中第一个规格
+			this.goodsProperties.forEach((v, i) => {
+				this.skuArr[i] = { optionId: v.id, optionValueId: v.childsCurGoods[0].id };
+				this.isActive.push(v.childsCurGoods[0].id);
+			});
+			this.query.sku = JSON.stringify(this.skuArr);
+			this.getStuDetail();
+		},
 		// 点击预览大图
 		handlePrevewImage(e) {
 			// 1 先构造要预览的图片数组
-			const urls = this.goodsDetail.pics2;
+			const urls = this.goodsImgList.map(v => v.pic);
 			// 2 接收传递过来的图片url
 			const current = e;
 			uni.previewImage({
@@ -190,36 +210,18 @@ export default {
 				this.$store.dispatch('getCollectCount'); //更新收藏数量
 			}
 		},
+		// 点击规格
 		handleAttr(i, oid, vid) {
-			this.isActive[i] = vid;
-			this.$forceUpdate(); //强制重新渲染
-			this.skuArr[i] = { optionId: oid, optionValueId: vid };
-			// 转字符串
-			this.query.sku = JSON.stringify(this.skuArr);
+			this.$set(this.isActive, i, vid);
+			this.$set(this.skuArr, i, { optionId: oid, optionValueId: vid });
+			this.query.sku = JSON.stringify(this.skuArr); // 加入购物车规格字符串
 			this.getStuDetail();
 		},
-		async getGoodsDetail(id) {
-			const res = await this.$request({ url: '/shop/goods/detail?id=' + id });
-			if (res.code !== 0) return this.$util.msg('获取数据失败');
-			this.goodsDetail = res.data;
-			// 规格种类
-			this.goodsProperties = this.goodsDetail.properties;
-			// 规格列表
-			this.goodsSkuList = this.goodsDetail.skuList;
-			// 首次进入默认选择第一个规格
-			this.goodsProperties.forEach((v, i) => {
-				this.skuArr[i] = { optionId: v.id, optionValueId: v.childsCurGoods[0].id };
-				this.isActive.push(v.childsCurGoods[0].id);
-			});
-			// 转字符串
-			this.query.sku = JSON.stringify(this.skuArr);
-			this.getStuDetail();
-		},
-		//获取选中规格对象
+		//获取选中规格数据
 		getStuDetail() {
-			let stu = this.skuArr;
+			let sku = this.skuArr;
 			let propertyChildIds = '';
-			stu.forEach((v, i) => {
+			sku.forEach((v, i) => {
 				for (let i in v) {
 					propertyChildIds += v[i];
 					if (i == 'optionId') {
@@ -228,27 +230,21 @@ export default {
 				}
 				propertyChildIds += ',';
 			});
-			this.propertyChildIds = propertyChildIds;
 			let skuDetail = this.goodsSkuList.filter(v => v.propertyChildIds == propertyChildIds);
 			this.skuDetail = skuDetail[0];
 		},
-		// 点击立即购买
+		// 点击结算,前往提交订单界面
 		handlePay() {
 			let orderGoods = [
 				{
-					goodsId: this.query.goodsId,
+					...this.skuDetail,
 					number: this.query.number,
-					propertyChildIds: this.propertyChildIds,
-					pic: this.goodsDetail.basicInfo.pic,
-					name: this.goodsDetail.basicInfo.name,
-					price: this.goodsDetail.basicInfo.minPrice,
-					propertyName: this.skuDetail.propertyChildNames
+					pic: this.goodsInfo.pic,
+					name: this.goodsInfo.name
 				}
 			];
-			// let propertyChildIds = this.propertyChildIds
-			// const goodsJsonStr = JSON.stringify(goods);
-			uni.setStorageSync('orderGoods', orderGoods);
-			this.navTo('/pages/pay/index?type=1', { login: true });
+			const orderGoodsStr = JSON.stringify(orderGoods);
+			this.navTo(`/pages/pay/index?orderGoods=${orderGoodsStr}`, { login: true });
 		}
 	}
 };
@@ -412,11 +408,11 @@ export default {
 			color: #000000;
 		}
 		.option {
-			padding: 20rpx 0;
+			padding: 10rpx 0;
 			display: flex;
 			flex-wrap: wrap;
-			justify-content: space-around;
 			text {
+				margin: 15rpx;
 				padding: 10rpx 30rpx;
 				border: 1rpx solid #d1d1d1;
 				border-radius: 35rpx;

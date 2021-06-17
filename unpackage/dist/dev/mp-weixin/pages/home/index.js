@@ -220,6 +220,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 var _default =
 {
   data: function data() {
@@ -262,10 +269,21 @@ var _default =
       }
     },
     // 获取分类导航
-    getCateList: function getCateList() {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var res;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
-                  _this2.$requests({ url: '/home/catitems' }));case 2:res = _context2.sent;if (!(
-                res.meta.status !== 200)) {_context2.next = 5;break;}return _context2.abrupt("return", _this2.$util.msg('获取导航数据失败'));case 5:
-                _this2.catesList = res.message;case 6:case "end":return _context2.stop();}}}, _callee2);}))();
+    getCateList: function getCateList() {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var res, catesList, toplist, bottomlist;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
+                  _this2.$request({ url: '/shop/goods/category/all' }));case 2:res = _context2.sent;
+                catesList = res.data.filter(function (v) {return v.pid == 0;});if (!(
+                res.code !== 0)) {_context2.next = 6;break;}return _context2.abrupt("return", _this2.$util.msg('获取导航数据失败'));case 6:
+                toplist = [];
+                bottomlist = [];
+                catesList.forEach(function (v, i) {
+                  if (i % 2 == 0) {
+                    toplist.push(v);
+                  } else {
+                    bottomlist.push(v);
+                  }
+                });
+                _this2.catesList[0] = toplist.slice(0, 9);
+                _this2.catesList[1] = bottomlist.slice(0, 9);case 11:case "end":return _context2.stop();}}}, _callee2);}))();
     },
     // 获取楼层数据
     getFloorList: function getFloorList() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var res;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:_context3.next = 2;return (

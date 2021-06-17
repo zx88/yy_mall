@@ -2,8 +2,8 @@
 	<view>
 		<view v-if="addressList.length > 0" class="main-wrap">
 			<view class="item" v-for="(item, index) in addressList" :key="index">
-				<u-card @click="chooseAddress(item)" margin="20rpx" padding="20" :show-head="false">
-					<view slot="body">
+				<u-card margin="20rpx" padding="20" :show-head="false">
+					<view slot="body" @click="chooseAddress(item)">
 						<view>
 							<text class="name">{{ item.linkMan }}</text>
 							<text class="mobile">{{ item.mobile }}</text>
@@ -47,7 +47,7 @@ export default {
 		};
 	},
 	onLoad(options) {
-		if(options.pay){
+		if (options.pay) {
 			this.isPay = !!options.pay;
 		}
 		console.log(this.isPay);
@@ -66,12 +66,18 @@ export default {
 			}
 			// this.list = res.data;
 		},
-		//选择地址
+		//选择地址回到订单界面
 		chooseAddress(item) {
 			if (!this.isPay) {
 				return;
 			}
-			this.navTo(`../pay/index?address=${JSON.stringify(item)}`);
+			var pages = getCurrentPages();
+			var prevPage = pages[pages.length - 2]; //上一个页面
+			//直接调用上一个页面的setData()方法，把数据存到上一个页面中去
+			prevPage.setData({
+				setAddress: item
+			});
+			uni.navigateBack();
 		},
 
 		// 删除地址
@@ -104,13 +110,14 @@ export default {
 	height: calc(100vh - var(--window-top) - 90rpx);
 }
 .item {
-	.name,.mobile {
+	.name,
+	.mobile {
 		margin-right: 20rpx;
 		font-size: 32rpx;
 		font-weight: bold;
 		color: #333;
 	}
-	.mobile{
+	.mobile {
 		color: #777;
 	}
 	.content {

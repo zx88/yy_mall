@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="main_wrap">
-			<u-card :show-foot="false" :show-head="false" margin="20rpx" padding="20">
+			<u-card :show-foot="false" :show-head="false" margin="0 20rpx" padding="20">
 				<view slot="body" class="addr_sec" @click="navTo('../address/index?pay=true', { login: true })">
 					<view v-if="!address.id" class="addr_empty">
 						<u-icon size="34" color="#e93b3d" name="map-fill"></u-icon>
@@ -28,7 +28,7 @@
 						<view class="cart_info_wrap">
 							<view class="goods_name">{{ item.name }}</view>
 							<view class="goods_attr">
-								<text>{{ item.propertyName }}</text>
+								<text>{{ item.propertyChildNames }}</text>
 								<!-- 								<text v-for="(item2, index2) in item.sku" :key="index2">
 									{{ item2.optionName }}{{ item2.optionValueName }}
 								</text> -->
@@ -95,35 +95,22 @@ export default {
 		return {
 			address: {},
 			orderGoods: [],
-			remarks:'',
+			remarks: '',
 			totalPrice: 0
 		};
 	},
 	onLoad(options) {
-		this.orderGoods = uni.getStorageSync('orderGoods');
-		if (options.type == 2) {
-			this.orderGoods.forEach(v => {
-				v.propertyName = '';
-				v.sku.forEach((v2, i2) => {
-					for (let i3 in v2) {
-						if (i3 == 'optionName' || i3 == 'optionValueName') {
-							v.propertyName += v2[i3];
-							if (i3 == 'optionName') {
-								v.propertyName += ':';
-							}
-						}
-					}
-					v.propertyName += ' ';
-				});
-			});
-		}
+		// 获取购买列表
+		this.orderGoods = JSON.parse(options.orderGoods);
 		this.setPrice(this.orderGoods);
-		
+	},
+	onShow(e) {
 		// 选择收货地址
-		if (options.address) {
-			this.address = JSON.parse(options.address);
-			console.log(JSON.parse(options.address));
-		}else{
+		let pages = getCurrentPages();
+		let currPage = pages[pages.length - 1];
+		if (currPage.data.setAddress !== undefined) {
+			this.address = currPage.data.setAddress;
+		} else {
 			// 默认收货地址
 			this.getDefaultaddress();
 		}
@@ -160,14 +147,14 @@ export default {
 			// console.log(res);
 			// 更新订单数量
 			this.$store.dispatch('getOrderCount');
-			this.$util.msg('订单创建成功,暂无支付接口')
+			this.$util.msg('订单创建成功,暂无支付接口');
 		}
 	}
 };
 </script>
 
 <style lang="scss" scoped>
-.main_wrap{
+.main_wrap {
 	padding-bottom: 100rpx;
 }
 .addr_sec {
@@ -200,7 +187,7 @@ export default {
 	.bg_line {
 		position: absolute;
 		left: 0;
-		bottom: -16rpx;
+		bottom: -21rpx;
 		width: 100%;
 		height: 4rpx;
 	}
@@ -234,6 +221,9 @@ export default {
 		}
 		.goods_attr {
 			color: #a5a5a5;
+			text {
+				font-size: 24rpx;
+			}
 		}
 		.goods_price_wrap {
 			display: flex;

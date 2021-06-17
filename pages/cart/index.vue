@@ -21,7 +21,7 @@
 					<view class="cart_info_wrap">
 						<view class="goods_name">{{ item.name }}</view>
 						<view class="goods_attr">
-							<text v-for="(item2, index2) in item.sku" :key="index2">{{ item2.optionName }}{{ item2.optionValueName }}</text>
+							<text v-for="(item2, index2) in item.sku" :key="index2">{{ item2.optionName }}:{{ item2.optionValueName }},</text>
 						</view>
 						<view class="goods_price_wrap">
 							<view class="goods_price">￥{{ item.price }}</view>
@@ -190,15 +190,17 @@ export default {
 			this.cartList = res.data.items;
 			this.setCart(this.cartList);
 		},
-		// 点击 结算前往支付界面
+		// 点击 结算前往提交订单界面
 		handlePay() {
 			let { totalNum, cartList } = this;
 			//  判断用户有没有选购商品
-			if (totalNum === 0) return this.$util.msg(res.msg);
+			if (totalNum === 0) return this.$util.msg('至少选择一个商品');
+			// 过滤未选中商品
 			cartList = cartList.filter(v => v.selected == true);
 			let propertyChildIds = [];
 			cartList.forEach((v, i) => {
 				v.propertyChildIds = '';
+				v.propertyChildNames = '';
 				v.sku.forEach((v2, i2) => {
 					for (let i3 in v2) {
 						if (i3 == 'optionId' || i3 == 'optionValueId') {
@@ -207,14 +209,21 @@ export default {
 								v.propertyChildIds += ':';
 							}
 						}
+						if (i3 == 'optionName' || i3 == 'optionValueName') {
+							v.propertyChildNames += v2[i3];
+							if (i3 == 'optionName') {
+								v.propertyChildNames += ':';
+							}
+						}
 					}
 					v.propertyChildIds += ',';
+					v.propertyChildNames += ',';
 				});
 			});
-			uni.setStorageSync('orderGoods', cartList);
-			// 跳转到 订单页面
+			const orderGoodsStr = JSON.stringify(cartList);
+			 // 跳转到 订单页面
 			uni.navigateTo({
-				url: '/pages/pay/index?type=2'
+				url: `/pages/pay/index?orderGoods=${orderGoodsStr}`
 			});
 		}
 	}
@@ -260,6 +269,9 @@ export default {
 			}
 			.goods_attr {
 				color: #a5a5a5;
+				text{
+					font-size: 24rpx;
+				}
 			}
 			.goods_price_wrap {
 				display: flex;

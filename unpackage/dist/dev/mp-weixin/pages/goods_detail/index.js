@@ -187,7 +187,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 8));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} //
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 8));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} //
 //
 //
 //
@@ -299,21 +299,23 @@ var _default =
 {
   data: function data() {
     return {
-      goodsDetail: {},
-      goodsProperties: [], //规格
-      goodsSkuList: [], //库存清单
+      goodsDetail: {}, //物品数据对象
+      goodsImgList: [], //轮播图列表
+      goodsInfo: {}, //货物信息
+      goodsContent: '', //详细描述
+      goodsProperties: [], //每种规格的数组
+      goodsSkuList: [], //全部规格组合列表
       isCollect: false, //是否收藏
-      isAttrPopup: false,
+      isAttrPopup: false, //弹出规格选择
       query: {
         goodsId: 0,
         number: 1,
         sku: [] },
-
-      isActive: [],
-      skuDetail: {}, //当前选中规格对象
-      skuArr: [], //当前选中规格数组
-      propertyChildIds: '' };
-
+      //加入购物车表单
+      isActive: [], //选中的规格id
+      skuDetail: {}, //选中规格对象
+      skuArr: [] //当前选中规格数组
+    };
   },
   onLoad: function onLoad(options) {
     this.query.goodsId = options.id;
@@ -337,10 +339,28 @@ var _default =
 
   },
   methods: {
+    // 获取商品数据
+    getGoodsDetail: function getGoodsDetail(id) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var res, _res$data, basicInfo, pics, properties, skuList, content;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
+                  _this2.$request({ url: '/shop/goods/detail?id=' + id }));case 2:res = _context2.sent;if (!(
+                res.code !== 0)) {_context2.next = 5;break;}return _context2.abrupt("return", _this2.$util.msg('获取数据失败'));case 5:_res$data =
+                res.data, basicInfo = _res$data.basicInfo, pics = _res$data.pics, properties = _res$data.properties, skuList = _res$data.skuList, content = _res$data.content;
+                _this2.goodsImgList = pics;
+                _this2.goodsInfo = basicInfo;
+                _this2.goodsContent = content;
+                _this2.goodsProperties = properties;
+                _this2.goodsSkuList = skuList;
+                // 首次进入默认选中第一个规格
+                _this2.goodsProperties.forEach(function (v, i) {
+                  _this2.skuArr[i] = { optionId: v.id, optionValueId: v.childsCurGoods[0].id };
+                  _this2.isActive.push(v.childsCurGoods[0].id);
+                });
+                _this2.query.sku = JSON.stringify(_this2.skuArr);
+                _this2.getStuDetail();case 14:case "end":return _context2.stop();}}}, _callee2);}))();
+    },
     // 点击预览大图
     handlePrevewImage: function handlePrevewImage(e) {
       // 1 先构造要预览的图片数组
-      var urls = this.goodsDetail.pics2;
+      var urls = this.goodsImgList.map(function (v) {return v.pic;});
       // 2 接收传递过来的图片url
       var current = e;
       uni.previewImage({
@@ -349,66 +369,48 @@ var _default =
 
     },
     // 点击 加入购物车
-    handleCartAdd: function handleCartAdd() {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var query, res;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:
-                _this2.$store.commit('setUpdateCart', true);
-                query = _this2.query;_context2.next = 4;return (
-                  _this2.$request({ method: 'post', url: '/shopping-cart/add', data: query }, { login: true }));case 4:res = _context2.sent;
+    handleCartAdd: function handleCartAdd() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var query, res;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:
+                _this3.$store.commit('setUpdateCart', true);
+                query = _this3.query;_context3.next = 4;return (
+                  _this3.$request({ method: 'post', url: '/shopping-cart/add', data: query }, { login: true }));case 4:res = _context3.sent;
                 // if (res.code === 10000) return;
                 if (res.code === 0) {
-                  _this2.$util.msg('加入购物车成功', { icon: 'success' });
-                  _this2.$store.commit('setCartCount', res.data.number); //更新购物车数量
-                }case 6:case "end":return _context2.stop();}}}, _callee2);}))();
+                  _this3.$util.msg('加入购物车成功', { icon: 'success' });
+                  _this3.$store.commit('setCartCount', res.data.number); //更新购物车数量
+                }case 6:case "end":return _context3.stop();}}}, _callee3);}))();
     },
     // 收藏
-    handleCollect: function handleCollect() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var res, _res;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:if (!(
-                _this3.isCollect == false)) {_context3.next = 10;break;}_context3.next = 3;return (
-                  _this3.$request(
-                  { method: 'post', url: '/shop/goods/fav/add', data: { goodsId: _this3.query.goodsId, type: 0 } },
-                  { login: true }));case 3:res = _context3.sent;if (!(
+    handleCollect: function handleCollect() {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {var res, _res;return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:if (!(
+                _this4.isCollect == false)) {_context4.next = 10;break;}_context4.next = 3;return (
+                  _this4.$request(
+                  { method: 'post', url: '/shop/goods/fav/add', data: { goodsId: _this4.query.goodsId, type: 0 } },
+                  { login: true }));case 3:res = _context4.sent;if (!(
 
-                res.code === 10000)) {_context3.next = 6;break;}return _context3.abrupt("return");case 6:
-                _this3.isCollect = true;
-                _this3.$store.dispatch('getCollectCount'); //更新收藏数量
-                _context3.next = 17;break;case 10:_context3.next = 12;return (
-                  _this3.$request(
-                  { method: 'post', url: '/shop/goods/fav/delete', data: { goodsId: _this3.query.goodsId, type: 0 } },
-                  { login: true }));case 12:_res = _context3.sent;if (!(
+                res.code === 10000)) {_context4.next = 6;break;}return _context4.abrupt("return");case 6:
+                _this4.isCollect = true;
+                _this4.$store.dispatch('getCollectCount'); //更新收藏数量
+                _context4.next = 17;break;case 10:_context4.next = 12;return (
+                  _this4.$request(
+                  { method: 'post', url: '/shop/goods/fav/delete', data: { goodsId: _this4.query.goodsId, type: 0 } },
+                  { login: true }));case 12:_res = _context4.sent;if (!(
 
-                _res.code === 10000)) {_context3.next = 15;break;}return _context3.abrupt("return");case 15:
-                _this3.isCollect = false;
-                _this3.$store.dispatch('getCollectCount'); //更新收藏数量
-              case 17:case "end":return _context3.stop();}}}, _callee3);}))();
+                _res.code === 10000)) {_context4.next = 15;break;}return _context4.abrupt("return");case 15:
+                _this4.isCollect = false;
+                _this4.$store.dispatch('getCollectCount'); //更新收藏数量
+              case 17:case "end":return _context4.stop();}}}, _callee4);}))();
     },
+    // 点击规格
     handleAttr: function handleAttr(i, oid, vid) {
-      this.isActive[i] = vid;
-      this.$forceUpdate(); //强制重新渲染
-      this.skuArr[i] = { optionId: oid, optionValueId: vid };
-      // 转字符串
-      this.query.sku = JSON.stringify(this.skuArr);
+      this.$set(this.isActive, i, vid);
+      this.$set(this.skuArr, i, { optionId: oid, optionValueId: vid });
+      this.query.sku = JSON.stringify(this.skuArr); // 加入购物车规格字符串
       this.getStuDetail();
     },
-    getGoodsDetail: function getGoodsDetail(id) {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {var res;return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:_context4.next = 2;return (
-                  _this4.$request({ url: '/shop/goods/detail?id=' + id }));case 2:res = _context4.sent;if (!(
-                res.code !== 0)) {_context4.next = 5;break;}return _context4.abrupt("return", _this4.$util.msg('获取数据失败'));case 5:
-                _this4.goodsDetail = res.data;
-                // 规格种类
-                _this4.goodsProperties = _this4.goodsDetail.properties;
-                // 规格列表
-                _this4.goodsSkuList = _this4.goodsDetail.skuList;
-                // 首次进入默认选择第一个规格
-                _this4.goodsProperties.forEach(function (v, i) {
-                  _this4.skuArr[i] = { optionId: v.id, optionValueId: v.childsCurGoods[0].id };
-                  _this4.isActive.push(v.childsCurGoods[0].id);
-                });
-                // 转字符串
-                _this4.query.sku = JSON.stringify(_this4.skuArr);
-                _this4.getStuDetail();case 11:case "end":return _context4.stop();}}}, _callee4);}))();
-    },
-    //获取选中规格对象
+    //获取选中规格数据
     getStuDetail: function getStuDetail() {
-      var stu = this.skuArr;
+      var sku = this.skuArr;
       var propertyChildIds = '';
-      stu.forEach(function (v, i) {
+      sku.forEach(function (v, i) {
         for (var _i in v) {
           propertyChildIds += v[_i];
           if (_i == 'optionId') {
@@ -417,27 +419,21 @@ var _default =
         }
         propertyChildIds += ',';
       });
-      this.propertyChildIds = propertyChildIds;
       var skuDetail = this.goodsSkuList.filter(function (v) {return v.propertyChildIds == propertyChildIds;});
       this.skuDetail = skuDetail[0];
     },
-    // 点击立即购买
+    // 点击结算,前往提交订单界面
     handlePay: function handlePay() {
-      var orderGoods = [
-      {
-        goodsId: this.query.goodsId,
+      var orderGoods = [_objectSpread(_objectSpread({},
+
+      this.skuDetail), {}, {
         number: this.query.number,
-        propertyChildIds: this.propertyChildIds,
-        pic: this.goodsDetail.basicInfo.pic,
-        name: this.goodsDetail.basicInfo.name,
-        price: this.goodsDetail.basicInfo.minPrice,
-        propertyName: this.skuDetail.propertyChildNames }];
+        pic: this.goodsInfo.pic,
+        name: this.goodsInfo.name })];
 
 
-      // let propertyChildIds = this.propertyChildIds
-      // const goodsJsonStr = JSON.stringify(goods);
-      uni.setStorageSync('orderGoods', orderGoods);
-      this.navTo('/pages/pay/index?type=1', { login: true });
+      var orderGoodsStr = JSON.stringify(orderGoods);
+      this.navTo("/pages/pay/index?orderGoods=".concat(orderGoodsStr), { login: true });
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

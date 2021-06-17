@@ -326,7 +326,7 @@ var _util = __webpack_require__(/*! ../../common/js/util.js */ 17);function _int
 
       });
     },
-    // 提交添加收货地址POST/{domain}/user/shipping-address/add
+    // 提交添加收货地址POST/{domain}/user/shipping-address/add  /{domain}/user/shipping-address/update
     submit: function submit() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var query, res;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:
                 query = _this3.query;if (
                 query.linkMan) {_context2.next = 4;break;}
@@ -342,10 +342,14 @@ var _util = __webpack_require__(/*! ../../common/js/util.js */ 17);function _int
 
 
                 query.address) {_context2.next = 13;break;}
-                _this3.$util.msg('请输入收货地址');return _context2.abrupt("return");case 13:_context2.next = 15;return (
+                _this3.$util.msg('请输入收货地址');return _context2.abrupt("return");case 13:if (
 
 
-                  _this3.$request({ method: 'post', url: '/user/shipping-address/add', data: query }));case 15:res = _context2.sent;
+                _this3.query.id) {_context2.next = 19;break;}_context2.next = 16;return (
+                  _this3.$request({ method: 'post', url: '/user/shipping-address/add', data: query }));case 16:res = _context2.sent;_context2.next = 22;break;case 19:_context2.next = 21;return (
+
+                  _this3.$request({ method: 'post', url: '/user/shipping-address/update', data: query }));case 21:res = _context2.sent;case 22:
+
                 // const operation = data._id ? 'update' : 'add';
                 // const res = await this.$request('address', operation, data);
                 // this.$util.msg(res.msg);
@@ -354,7 +358,7 @@ var _util = __webpack_require__(/*! ../../common/js/util.js */ 17);function _int
                   setTimeout(function () {
                     uni.navigateBack();
                   }, 1000);
-                }case 17:case "end":return _context2.stop();}}}, _callee2);}))();
+                }case 23:case "end":return _context2.stop();}}}, _callee2);}))();
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

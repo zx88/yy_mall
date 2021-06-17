@@ -22,7 +22,6 @@ export const request = (params = {}, ext = {}) => {
 	if (ext.login && !isLogin()) {
 		return {code: 10000};
 	}
-	console.log(ext.login);
 	params.data = {
 		...params.data,
 		token: store.state.token

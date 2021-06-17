@@ -195,11 +195,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 var _default =
 {
   data: function data() {
     return {
       searchList: [],
+      hotList: ['南极人', '小米', '三星', '外套', '男士', '伞'],
       historyList: [],
       inpValue: '',
       isDelHistory: false };
@@ -223,7 +228,7 @@ var _default =
     // 点击搜索按钮
     handleInput: function handleInput(e) {
       var value = e;
-      if (!value.trim()) return uni.showToast({ icon: 'none', title: '请先输入关键字' });
+      if (!value.trim()) return this.$util.msg('请先输入关键字');
       var clonehistoryList = _toConsumableArray(this.historyList);
       clonehistoryList.unshift(value);
       uni.setStorage({
@@ -246,11 +251,12 @@ var _default =
       this.inpValue = e;
       this.getsearchList(e);
     },
-    // 获取搜索列表
+    // 获取搜索列表/{domain}/shop/goods/list/v2
     getsearchList: function getsearchList(val) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var res;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
-                  _this2.$requests({ url: '/goods/qsearch', data: { query: val } }));case 2:res = _context2.sent;if (!(
-                res.meta.status !== 200 || res.message.length === 0)) {_context2.next = 5;break;}return _context2.abrupt("return", uni.showToast({ icon: 'none', title: '没有搜索到数据!' }));case 5:
-                _this2.searchList = res.message;case 6:case "end":return _context2.stop();}}}, _callee2);}))();
+                  _this2.$request({ url: '/shop/goods/list/v2', method: 'post', data: { k: val } }));case 2:res = _context2.sent;if (!(
+                res.code !== 0)) {_context2.next = 5;break;}return _context2.abrupt("return", _this2.$util.msg('没有搜索到结果!'));case 5:
+                _this2.searchList = res.data.result;
+                console.log(res);case 7:case "end":return _context2.stop();}}}, _callee2);}))();
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

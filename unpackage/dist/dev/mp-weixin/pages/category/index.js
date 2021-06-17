@@ -186,7 +186,15 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     Search: Search },
 
-  onLoad: function onLoad() {
+  onLoad: function onLoad(options) {
+    if (options.id) {
+      var index = this.leftMenuList.filter(function (v, i) {
+        if (v.id == options.id) {
+          return i;
+        }
+      });
+      console.log(index);
+    }
     // 获取本地存储中的数据
     var Cates = uni.getStorageSync('cates');
     if (!Cates || Date.now() - Cates.time > 1000 * 300) {

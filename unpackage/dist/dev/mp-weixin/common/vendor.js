@@ -4041,7 +4041,6 @@ var request = function request() {var params = arguments.length > 0 && arguments
   if (ext.login && !(0, _util.isLogin)()) {
     return { code: 10000 };
   }
-  console.log(ext.login);
   params.data = _objectSpread(_objectSpread({},
   params.data), {}, {
     token: _store.default.state.token });

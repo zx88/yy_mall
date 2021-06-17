@@ -357,15 +357,17 @@ var _vuex = __webpack_require__(/*! vuex */ 15);function _interopRequireDefault(
                 _this5.cartList = res.data.items;
                 _this5.setCart(_this5.cartList);case 13:case "end":return _context5.stop();}}}, _callee5);}))();
     },
-    // 点击 结算前往支付界面
+    // 点击 结算前往提交订单界面
     handlePay: function handlePay() {var
       totalNum = this.totalNum,cartList = this.cartList;
       //  判断用户有没有选购商品
-      if (totalNum === 0) return this.$util.msg(res.msg);
+      if (totalNum === 0) return this.$util.msg('至少选择一个商品');
+      // 过滤未选中商品
       cartList = cartList.filter(function (v) {return v.selected == true;});
       var propertyChildIds = [];
       cartList.forEach(function (v, i) {
         v.propertyChildIds = '';
+        v.propertyChildNames = '';
         v.sku.forEach(function (v2, i2) {
           for (var i3 in v2) {
             if (i3 == 'optionId' || i3 == 'optionValueId') {
@@ -374,14 +376,21 @@ var _vuex = __webpack_require__(/*! vuex */ 15);function _interopRequireDefault(
                 v.propertyChildIds += ':';
               }
             }
+            if (i3 == 'optionName' || i3 == 'optionValueName') {
+              v.propertyChildNames += v2[i3];
+              if (i3 == 'optionName') {
+                v.propertyChildNames += ':';
+              }
+            }
           }
           v.propertyChildIds += ',';
+          v.propertyChildNames += ',';
         });
       });
-      uni.setStorageSync('orderGoods', cartList);
+      var orderGoodsStr = JSON.stringify(cartList);
       // 跳转到 订单页面
       uni.navigateTo({
-        url: '/pages/pay/index?type=2' });
+        url: "/pages/pay/index?orderGoods=".concat(orderGoodsStr) });
 
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))

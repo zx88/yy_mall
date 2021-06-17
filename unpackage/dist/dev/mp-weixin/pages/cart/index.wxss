@@ -86,6 +86,9 @@
 .cart_main .cart_item .cart_info_wrap .goods_attr.data-v-457cfe48 {
   color: #a5a5a5;
 }
+.cart_main .cart_item .cart_info_wrap .goods_attr text.data-v-457cfe48 {
+  font-size: 24rpx;
+}
 .cart_main .cart_item .cart_info_wrap .goods_price_wrap.data-v-457cfe48 {
   display: -webkit-box;
   display: -webkit-flex;

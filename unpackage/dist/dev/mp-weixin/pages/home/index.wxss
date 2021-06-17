@@ -63,17 +63,22 @@
   background-image: linear-gradient(180deg, #8b8dff, whitesmoke);
 }
 .top_box .cate.data-v-71e217db {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-justify-content: space-around;
-          justify-content: space-around;
+  white-space: nowrap;
+  height: 280rpx;
 }
 .top_box .cate navigator.data-v-71e217db {
-  padding: 20rpx;
+  display: inline-block;
+  text-align: center;
+  width: 139rpx;
+  height: 140rpx;
+  font-size: 26rpx;
 }
 .top_box .cate navigator image.data-v-71e217db {
-  width: 120rpx;
+  width: 110rpx;
+}
+.top_box .cate navigator text.data-v-71e217db {
+  display: block;
+  text-align: center;
 }
 .index_floor .floor_group .floor_title.data-v-71e217db {
   padding: 10rpx 0;

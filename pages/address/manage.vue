@@ -153,7 +153,7 @@ export default {
 				});
 			});
 		},
-		// 提交添加收货地址POST/{domain}/user/shipping-address/add
+		// 提交添加收货地址POST/{domain}/user/shipping-address/add  /{domain}/user/shipping-address/update
 		async submit() {
 			const query = this.query;
 			if (!query.linkMan) {
@@ -172,7 +172,11 @@ export default {
 				this.$util.msg('请输入收货地址');
 				return;
 			}
-			const res = await this.$request({ method: 'post', url: '/user/shipping-address/add', data: query });
+			if(!this.query.id){
+				var res = await this.$request({ method: 'post', url: '/user/shipping-address/add', data: query });
+			}else{
+				var res = await this.$request({ method: 'post', url: '/user/shipping-address/update', data: query });
+			}
 			// const operation = data._id ? 'update' : 'add';
 			// const res = await this.$request('address', operation, data);
 			// this.$util.msg(res.msg);

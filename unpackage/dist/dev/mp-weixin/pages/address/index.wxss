@@ -31,7 +31,8 @@
 .cart_empty.data-v-5f170bce {
   height: calc(100vh - 0px - 90rpx);
 }
-.item .name.data-v-5f170bce, .item .mobile.data-v-5f170bce {
+.item .name.data-v-5f170bce,
+.item .mobile.data-v-5f170bce {
   margin-right: 20rpx;
   font-size: 32rpx;
   font-weight: bold;

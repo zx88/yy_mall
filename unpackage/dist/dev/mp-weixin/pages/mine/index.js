@@ -288,7 +288,7 @@ var _vuex = __webpack_require__(/*! vuex */ 15);function ownKeys(object, enumera
   data: function data() {
     return {
       cellList: [
-      { title: '我的红包', value: '进入我的钱包', iconStyle: { color: '#ff536f' }, icon: 'red-packet-fill' },
+      { title: '我的钱包', value: '进入我的钱包', iconStyle: { color: '#ff536f' }, icon: 'red-packet-fill' },
       { title: '我的收藏', value: '查看收藏商品', iconStyle: { color: '#aa55ff' }, icon: 'star-fill' },
       { title: '地址管理', value: '管理我的地址', iconStyle: { color: '#5fcda2' }, icon: 'map-fill' },
       { title: '意见反馈', value: '期待您的建议', iconStyle: { color: '#55aaff' }, icon: 'email-fill' },

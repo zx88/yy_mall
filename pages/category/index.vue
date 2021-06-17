@@ -54,7 +54,15 @@ export default {
 	components: {
 		Search
 	},
-	onLoad() {
+	onLoad(options) {
+		if (options.id) {
+			let index = this.leftMenuList.filter((v, i) => {
+				if (v.id == options.id) {
+					return i;
+				}
+			});
+			console.log(index);
+		}
 		// 获取本地存储中的数据
 		const Cates = uni.getStorageSync('cates');
 		if (!Cates || Date.now() - Cates.time > 1000 * 300) {
@@ -134,6 +142,8 @@ export default {
 		.active {
 			color: $themeColor;
 			border-left: 5rpx solid $themeColor;
+			font-size: 36rpx;
+			font-weight: bold;
 		}
 	}
 	.right_content {
