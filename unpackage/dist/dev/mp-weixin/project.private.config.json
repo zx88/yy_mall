@@ -1,0 +1,119 @@
+{
+  "setting": {},
+  "condition": {
+    "plugin": {
+      "list": []
+    },
+    "game": {
+      "list": []
+    },
+    "gamePlugin": {
+      "list": []
+    },
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/search/index",
+          "pathName": "pages/search/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/category/index",
+          "pathName": "pages/category/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/goods_list/index",
+          "pathName": "pages/goods_list/index",
+          "query": "cid=5",
+          "scene": null
+        },
+        {
+          "name": "pages/goods_detail/index",
+          "pathName": "pages/goods_detail/index",
+          "query": "id=891774",
+          "scene": null
+        },
+        {
+          "name": "pages/cart/index",
+          "pathName": "pages/cart/index",
+          "query": "gid=43981",
+          "scene": null
+        },
+        {
+          "name": "pages/mine/index",
+          "pathName": "pages/mine/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/mine/login/index",
+          "pathName": "pages/mine/login/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/mine/feedback",
+          "pathName": "pages/mine/feedback",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/order/index",
+          "pathName": "pages/order/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/pay/index",
+          "pathName": "pages/pay/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/collect/index",
+          "pathName": "pages/collect/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/order/index",
+          "pathName": "pages/order/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/set/index",
+          "pathName": "pages/set/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/auth/login",
+          "pathName": "pages/auth/login",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/auth/register",
+          "pathName": "pages/auth/register",
+          "query": "type=user",
+          "scene": null
+        },
+        {
+          "name": "pages/address/index",
+          "pathName": "pages/address/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/address/manage",
+          "pathName": "pages/address/manage",
+          "scene": null
+        }
+      ]
+    }
+  }
+}

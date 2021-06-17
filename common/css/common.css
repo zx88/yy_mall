@@ -1,0 +1,45 @@
+view,
+scroll-view,
+swiper,
+swiper-item,
+cover-view,
+cover-image,
+icon,
+text,
+rich-text,
+progress,
+button,
+checkbox,
+form,
+input,
+label,
+radio,
+slider,
+switch,
+textarea,
+navigator,
+audio,
+camera,
+image,
+video {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+page {
+	font-size: 28rpx;
+	color: #666;
+	background-color: #F5F5F5;
+	width: 100%;
+}
+
+image {
+	display: block;
+	width: 100%;
+}
+text{
+	line-height: 1;
+	/* font-family: Helvetica Neue, Helvetica, sans-serif; */
+}
+

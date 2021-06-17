@@ -1,0 +1,1 @@
+<view class="data-v-392c199c"><block wx:if="{{agreementType==1}}"><rich-text nodes="{{serviceAgreement}}" class="data-v-392c199c"></rich-text></block><block wx:if="{{agreementType==2}}"><rich-text nodes="{{privacyAgreement}}" class="data-v-392c199c"></rich-text></block></view>

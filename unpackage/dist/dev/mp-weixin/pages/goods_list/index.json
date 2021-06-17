@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "商品列表",
+  "usingComponents": {
+    "u-card": "/uview-ui/components/u-card/u-card",
+    "u-loadmore": "/uview-ui/components/u-loadmore/u-loadmore",
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "tabs": "/components/Tabs"
+  }
+}
