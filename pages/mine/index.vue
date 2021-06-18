@@ -136,9 +136,15 @@ export default {
 	},
 	onShow() {
 		// 浏览足迹
-		this.historyConut = uni.getStorageSync('historyCount');
+		let historyConut = uni.getStorageSync('historyCount');
+		if (this.hasLogin) {
+			if (historyConut) {
+				this.historyConut = historyConut;
+			} else {
+				this.getHistoryList();
+			}
+		}
 	},
-	onLoad() {},
 	methods: {
 		handleCell(e) {
 			if (e === 0) {
@@ -153,6 +159,16 @@ export default {
 				this.navTo('../set/index', { login: true });
 			} else {
 				this.navTo('contact', { login: true });
+			}
+		},
+		// 浏览历史
+		async getHistoryList() {
+			const queryParams = this.queryParams;
+			const res = await this.$request({ method: 'post', url: '/goods/visitLog', data: queryParams });
+			if (res.code === 700) return;
+			if (res.code === 0) {
+				this.historyConut = res.data.totalRow;
+				uni.setStorageSync('historyCount', res.data.totalRow);
 			}
 		}
 	}
