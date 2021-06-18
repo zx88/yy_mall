@@ -142,7 +142,6 @@ export default {
 	}
 }
 .search_content {
-	background-color: #18b566;
 	padding: 20rpx;
 	.search_item {
 		background-color: #fff;

@@ -256,25 +256,20 @@ var _default =
     return {
       address: {},
       orderGoods: [],
-      remarks: '',
-      totalPrice: 0 };
-
+      remarks: '', //备注
+      totalPrice: 0, //总价
+      isInto: 0 //下单方式,购物车/直接购买
+    };
   },
   onLoad: function onLoad(options) {
     // 获取购买列表
     this.orderGoods = JSON.parse(options.orderGoods);
-    this.setPrice(this.orderGoods);
-  },
-  onShow: function onShow(e) {
-    // 选择收货地址
-    var pages = getCurrentPages();
-    var currPage = pages[pages.length - 1];
-    if (currPage.data.setAddress !== undefined) {
-      this.address = currPage.data.setAddress;
-    } else {
-      // 默认收货地址
-      this.getDefaultaddress();
+    if (this.orderGoods[0].type) {
+      this.isInto = 1;
     }
+    this.setPrice(this.orderGoods);
+    // 收货地址
+    this.getDefaultaddress();
   },
   methods: {
     // 计算总价
@@ -286,29 +281,33 @@ var _default =
       });
       this.totalPrice = totalPrice;
     },
-
     // 默认收货地址
     getDefaultaddress: function getDefaultaddress() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var res;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
                   _this.$request({ url: '/user/shipping-address/default/v2' }));case 2:res = _context.sent;if (!(
                 res.code !== 0)) {_context.next = 5;break;}return _context.abrupt("return");case 5:
                 _this.address = res.data.info;case 6:case "end":return _context.stop();}}}, _callee);}))();
     },
-    // JSON.stringify(this.skuArr);
+    // 收货地址页面调用方法修改地址
+    updeatAddress: function updeatAddress(data) {
+      this.address = data;
+    },
     // 前往支付页面
-    createOrder: function createOrder() {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var orderGoods, goodsJsonStr, res;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:
+    createOrder: function createOrder() {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var orderGoods, goodsJsonStr, res, res2;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:
                 orderGoods = _this2.orderGoods.map(function (_ref) {var goodsId = _ref.goodsId,number = _ref.number,propertyChildIds = _ref.propertyChildIds;
                   return { goodsId: goodsId, number: number, propertyChildIds: propertyChildIds };
                 });
                 goodsJsonStr = JSON.stringify(orderGoods);_context2.next = 4;return (
-                  _this2.$request({
-                    method: 'post',
-                    url: '/order/create',
-                    data: _objectSpread(_objectSpread({}, _this2.address), {}, { goodsJsonStr: goodsJsonStr, peisongType: 'kd' }) }));case 4:res = _context2.sent;
+                  _this2.$request({ method: 'post', url: '/order/create', data: _objectSpread(_objectSpread({}, _this2.address), {}, { goodsJsonStr: goodsJsonStr, peisongType: 'kd' }) }));case 4:res = _context2.sent;if (!(
+                res.code !== 0)) {_context2.next = 7;break;}return _context2.abrupt("return");case 7:if (
 
-                // console.log(res);
+                _this2.isInto) {_context2.next = 12;break;}_context2.next = 10;return (
+                  _this2.$request({ method: 'post', url: '/shopping-cart/empty' }));case 10:res2 = _context2.sent;
+                //需要更新购物车
+                _this2.$store.commit('setUpdateCart', true);case 12:
+
+                _this2.$util.msg('订单创建成功,无支付接口');
                 // 更新订单数量
-                _this2.$store.dispatch('getOrderCount');
-                _this2.$util.msg('订单创建成功,暂无支付接口');case 7:case "end":return _context2.stop();}}}, _callee2);}))();
+                _this2.$store.dispatch('getOrderCount');case 14:case "end":return _context2.stop();}}}, _callee2);}))();
     } } };exports.default = _default;
 
 /***/ }),

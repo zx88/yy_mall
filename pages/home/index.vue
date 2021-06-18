@@ -51,7 +51,7 @@
 							<navigator
 								v-for="(item2, index2) in item.product_list"
 								:key="index2"
-								:url="'/pages/goods_list/index?query=' + item2.navigator_url"
+								:url="'/pages/goods_list/index?k=' + item2.navigator_url"
 							>
 								<image :mode="index2 === 0 ? 'widthFix' : 'scaleToFill'" :src="item2.image_src"></image>
 							</navigator>
@@ -89,17 +89,17 @@ export default {
 		handleSwiper(index) {
 			if (index === 0) {
 				uni.navigateTo({
-					url: `../goods_list/index?cid=${862}`
+					url: `../goods_list/index?id=${233412}`
 				});
 				return;
 			} else if (index === 1) {
 				uni.navigateTo({
-					url: `../goods_list/index?cid=${12}`
+					url: `../goods_list/index?id=${235850}`
 				});
 				return;
 			} else {
 				uni.navigateTo({
-					url: `../goods_list/index?cid=${200}`
+					url: `../goods_list/index?id=${235850}`
 				});
 				return;
 			}
@@ -118,8 +118,8 @@ export default {
 					bottomlist.push(v);
 				}
 			});
-			this.catesList[0] = toplist.slice(0, 9);
-			this.catesList[1] = bottomlist.slice(0, 9);
+			this.$set(this.catesList, 0, toplist.slice(0, 9));
+			this.$set(this.catesList, 1, bottomlist.slice(0, 9));
 		},
 		// 获取楼层数据
 		async getFloorList() {

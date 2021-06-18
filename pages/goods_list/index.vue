@@ -2,6 +2,7 @@
 	<view>
 		<Tabs :tabs="tabs" @handleTabsTitle="showListSort" @handleTabsRight="showListStyle">
 			<scroll-view
+				v-if="goodsList.length"
 				class="goods_list"
 				scroll-y="true"
 				:lower-threshold="30"
@@ -12,7 +13,7 @@
 				@scrolltolower="scrolltolower"
 				@refresherrefresh="refresherrefresh"
 			>
-				<view v-if="tabs[0].isActive">
+				<view>
 					<view :class="isListStyle ? 'first_tab_list' : 'first_tab_img'">
 						<view class="goods_item_box" v-for="(item, index) in goodsList" :key="index">
 							<u-card class="card" margin="10rpx" padding="20" :show-foot="false" :show-head="false">
@@ -26,7 +27,7 @@
 									<!-- 右侧 商品容器 -->
 									<view class="goods_info_wrap">
 										<view class="goods_name">{{ item.name }}</view>
-										<view class="goods_num">销量: {{ item.numberSells }}</view>
+										<view class="goods_num">销量: {{ item.numberOrders }}</view>
 										<view class="goods_price">
 											￥{{ item.minPrice }}
 											<text class="old_price">￥{{ item.originalPrice }}</text>
@@ -37,11 +38,9 @@
 						</view>
 					</view>
 				</view>
-				<view v-else-if="tabs[1].isActive">销量</view>
-				<view v-else-if="tabs[2].isActive">价格</view>
-				<view v-else-if="tabs[3].isActive">好评</view>
-				<u-loadmore v-if="totalPages > 1" :status="loadMore" margin-bottom="25" />
+				<u-loadmore v-if="totalPage > 1" :status="loadMore" margin-bottom="25" />
 			</scroll-view>
+			<view v-else class="cart_empty"><u-empty text="暂时没有数据" mode="favor"></u-empty></view>
 			<!-- 返回顶部 -->
 			<view v-show="isBackTop" class="BackTop" @click="handleBackTop"><u-icon name="arrow-upward"></u-icon></view>
 		</Tabs>
@@ -63,18 +62,20 @@ export default {
 				{
 					id: 1,
 					value: '销量',
-					isActive: false
+					isActive: false,
+					isSort: 'top'
 				},
 				{
 					id: 2,
 					value: '价格',
 					isActive: false,
-					isSort: true
+					isSort: 'top'
 				},
 				{
 					id: 3,
-					value: '好评率',
-					isActive: false
+					value: '时间',
+					isActive: false,
+					isSort: 'top'
 				}
 			],
 			// 显示模式大图/列表
@@ -83,13 +84,14 @@ export default {
 			goodsList: [],
 			// 接口请求参数
 			QueryParams: {
-				query: '',
 				categoryId: '',
-				pagenum: 1,
-				pagesize: 10
+				page: 1,
+				pageSize: 10,
+				orderBy: 'nameUp',
+				k: ''
 			},
 			// 总页数
-			totalPages: 1,
+			totalPage: 1,
 			// 顶部距离
 			scrollTop: 0,
 			// 返回顶部按钮显示/关闭
@@ -104,7 +106,7 @@ export default {
 	},
 	onLoad(options) {
 		this.QueryParams.categoryId = options.id || '';
-		this.QueryParams.query = options.query || '';
+		this.QueryParams.k = options.k || '';
 		this.getGoodsList();
 	},
 	methods: {
@@ -126,8 +128,8 @@ export default {
 		// 下拉刷新
 		refresherrefresh() {
 			this.goodsList = [];
-			this.QueryParams.pagenum = 1;
-			this.loadMore = 'loading';
+			this.QueryParams.page = 1;
+			// this.loadMore = 'loading';
 			if (this.triggered) return;
 			this.triggered = true; //下拉加载，先让其变true再变false才能关闭
 			this.getGoodsList();
@@ -135,19 +137,20 @@ export default {
 		// 触底加载更多
 		scrolltolower() {
 			//  1 判断还有没有下一页数据
-			if (this.QueryParams.pagenum >= this.totalPages) {
+			if (this.QueryParams.page >= this.totalPage) {
 				this.loadMore = 'nomore';
 			} else {
-				this.QueryParams.pagenum++;
+				this.QueryParams.page++;
 				this.getGoodsList();
 			}
 		},
 		// 获取列表
 		async getGoodsList() {
-			const res = await this.$request({ url: '/shop/goods/list', data: this.QueryParams });
+			this.loadMore = 'loading';
+			const res = await this.$request({ method: 'post', url: '/shop/goods/list/v2', data: this.QueryParams });
 			if (res.code !== 0) return this.$util.msg(res.msg);
-			this.goodsList = [...this.goodsList, ...res.data];
-			console.log(this.goodsList);
+			this.totalPage = res.data.totalPage;
+			this.goodsList = [...this.goodsList, ...res.data.result];
 			// 关闭下拉刷新的窗口
 			this.triggered = false;
 		},
@@ -158,9 +161,45 @@ export default {
 		// 选择排序方式
 		showListSort(index) {
 			this.tabs.forEach((v, i) => (i === index ? (v.isActive = true) : (v.isActive = false)));
-			if (index == 2) {
-				this.tabs[index].isSort = !this.tabs[index].isSort;
-				return;
+			let isSort = this.tabs[index].isSort;
+			if (index == 0) {
+				this.QueryParams.orderBy = 'nameUp';
+				this.goodsList = [];
+				this.QueryParams.page = 1;
+				this.getGoodsList();
+			} else if (index == 1) {
+				if (isSort == 'top') {
+					this.tabs[index].isSort = 'bottom';
+					this.QueryParams.orderBy = 'ordersDown';
+				} else {
+					this.tabs[index].isSort = 'top';
+					this.QueryParams.orderBy = 'ordersUp';
+				}
+				this.goodsList = [];
+				this.QueryParams.page = 1;
+				this.getGoodsList();
+			} else if (index == 2) {
+				if (isSort == 'top') {
+					this.tabs[index].isSort = 'bottom';
+					this.QueryParams.orderBy = 'priceDown';
+				} else {
+					this.tabs[index].isSort = 'top';
+					this.QueryParams.orderBy = 'priceUp';
+				}
+				this.goodsList = [];
+				this.QueryParams.page = 1;
+				this.getGoodsList();
+			} else if (index == 3) {
+				if (isSort == 'top') {
+					this.tabs[index].isSort = 'bottom';
+					this.QueryParams.orderBy = 'addedUp';
+				} else {
+					this.tabs[index].isSort = 'top';
+					this.QueryParams.orderBy = 'addedDown';
+				}
+				this.goodsList = [];
+				this.QueryParams.page = 1;
+				this.getGoodsList();
 			}
 		}
 	}
@@ -169,6 +208,9 @@ export default {
 
 <style lang="scss" scoped>
 .goods_list {
+	height: calc(100vh - var(--window-top) - 90rpx);
+}
+.cart_empty {
 	height: calc(100vh - var(--window-top) - 90rpx);
 }
 .first_tab_list {

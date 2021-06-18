@@ -101,6 +101,9 @@ try {
     uLoadmore: function() {
       return __webpack_require__.e(/*! import() | uview-ui/components/u-loadmore/u-loadmore */ "uview-ui/components/u-loadmore/u-loadmore").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-loadmore/u-loadmore.vue */ 331))
     },
+    uEmpty: function() {
+      return __webpack_require__.e(/*! import() | uview-ui/components/u-empty/u-empty */ "uview-ui/components/u-empty/u-empty").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-empty/u-empty.vue */ 289))
+    },
     uIcon: function() {
       return __webpack_require__.e(/*! import() | uview-ui/components/u-icon/u-icon */ "uview-ui/components/u-icon/u-icon").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-icon/u-icon.vue */ 233))
     }
@@ -210,7 +213,6 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-
 {
   data: function data() {
     return {
@@ -224,18 +226,20 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
       {
         id: 1,
         value: '销量',
-        isActive: false },
+        isActive: false,
+        isSort: 'top' },
 
       {
         id: 2,
         value: '价格',
         isActive: false,
-        isSort: true },
+        isSort: 'top' },
 
       {
         id: 3,
-        value: '好评率',
-        isActive: false }],
+        value: '时间',
+        isActive: false,
+        isSort: 'top' }],
 
 
       // 显示模式大图/列表
@@ -244,13 +248,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
       goodsList: [],
       // 接口请求参数
       QueryParams: {
-        query: '',
         categoryId: '',
-        pagenum: 1,
-        pagesize: 10 },
+        page: 1,
+        pageSize: 10,
+        orderBy: 'nameUp',
+        k: '' },
 
       // 总页数
-      totalPages: 1,
+      totalPage: 1,
       // 顶部距离
       scrollTop: 0,
       // 返回顶部按钮显示/关闭
@@ -265,7 +270,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
   onLoad: function onLoad(options) {
     this.QueryParams.categoryId = options.id || '';
-    this.QueryParams.query = options.query || '';
+    this.QueryParams.k = options.k || '';
     this.getGoodsList();
   },
   methods: {
@@ -287,8 +292,8 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     // 下拉刷新
     refresherrefresh: function refresherrefresh() {
       this.goodsList = [];
-      this.QueryParams.pagenum = 1;
-      this.loadMore = 'loading';
+      this.QueryParams.page = 1;
+      // this.loadMore = 'loading';
       if (this.triggered) return;
       this.triggered = true; //下拉加载，先让其变true再变false才能关闭
       this.getGoodsList();
@@ -296,21 +301,22 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     // 触底加载更多
     scrolltolower: function scrolltolower() {
       //  1 判断还有没有下一页数据
-      if (this.QueryParams.pagenum >= this.totalPages) {
+      if (this.QueryParams.page >= this.totalPage) {
         this.loadMore = 'nomore';
       } else {
-        this.QueryParams.pagenum++;
+        this.QueryParams.page++;
         this.getGoodsList();
       }
     },
     // 获取列表
-    getGoodsList: function getGoodsList() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var res;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
-                  _this.$request({ url: '/shop/goods/list', data: _this.QueryParams }));case 2:res = _context.sent;if (!(
-                res.code !== 0)) {_context.next = 5;break;}return _context.abrupt("return", _this.$util.msg(res.msg));case 5:
-                _this.goodsList = [].concat(_toConsumableArray(_this.goodsList), _toConsumableArray(res.data));
-                console.log(_this.goodsList);
+    getGoodsList: function getGoodsList() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var res;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:
+                _this.loadMore = 'loading';_context.next = 3;return (
+                  _this.$request({ method: 'post', url: '/shop/goods/list/v2', data: _this.QueryParams }));case 3:res = _context.sent;if (!(
+                res.code !== 0)) {_context.next = 6;break;}return _context.abrupt("return", _this.$util.msg(res.msg));case 6:
+                _this.totalPage = res.data.totalPage;
+                _this.goodsList = [].concat(_toConsumableArray(_this.goodsList), _toConsumableArray(res.data.result));
                 // 关闭下拉刷新的窗口
-                _this.triggered = false;case 8:case "end":return _context.stop();}}}, _callee);}))();
+                _this.triggered = false;case 9:case "end":return _context.stop();}}}, _callee);}))();
     },
     // 切换列表或大图显示
     showListStyle: function showListStyle(e) {
@@ -319,9 +325,45 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     // 选择排序方式
     showListSort: function showListSort(index) {
       this.tabs.forEach(function (v, i) {return i === index ? v.isActive = true : v.isActive = false;});
-      if (index == 2) {
-        this.tabs[index].isSort = !this.tabs[index].isSort;
-        return;
+      var isSort = this.tabs[index].isSort;
+      if (index == 0) {
+        this.QueryParams.orderBy = 'nameUp';
+        this.goodsList = [];
+        this.QueryParams.page = 1;
+        this.getGoodsList();
+      } else if (index == 1) {
+        if (isSort == 'top') {
+          this.tabs[index].isSort = 'bottom';
+          this.QueryParams.orderBy = 'ordersDown';
+        } else {
+          this.tabs[index].isSort = 'top';
+          this.QueryParams.orderBy = 'ordersUp';
+        }
+        this.goodsList = [];
+        this.QueryParams.page = 1;
+        this.getGoodsList();
+      } else if (index == 2) {
+        if (isSort == 'top') {
+          this.tabs[index].isSort = 'bottom';
+          this.QueryParams.orderBy = 'priceDown';
+        } else {
+          this.tabs[index].isSort = 'top';
+          this.QueryParams.orderBy = 'priceUp';
+        }
+        this.goodsList = [];
+        this.QueryParams.page = 1;
+        this.getGoodsList();
+      } else if (index == 3) {
+        if (isSort == 'top') {
+          this.tabs[index].isSort = 'bottom';
+          this.QueryParams.orderBy = 'addedUp';
+        } else {
+          this.tabs[index].isSort = 'top';
+          this.QueryParams.orderBy = 'addedDown';
+        }
+        this.goodsList = [];
+        this.QueryParams.page = 1;
+        this.getGoodsList();
       }
     } } };exports.default = _default;
 

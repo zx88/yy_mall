@@ -357,7 +357,7 @@ var _vuex = __webpack_require__(/*! vuex */ 15);function _interopRequireDefault(
                 _this5.cartList = res.data.items;
                 _this5.setCart(_this5.cartList);case 13:case "end":return _context5.stop();}}}, _callee5);}))();
     },
-    // 点击 结算前往提交订单界面
+    // 点击结算,前往提交订单界面
     handlePay: function handlePay() {var
       totalNum = this.totalNum,cartList = this.cartList;
       //  判断用户有没有选购商品
@@ -368,24 +368,26 @@ var _vuex = __webpack_require__(/*! vuex */ 15);function _interopRequireDefault(
       cartList.forEach(function (v, i) {
         v.propertyChildIds = '';
         v.propertyChildNames = '';
-        v.sku.forEach(function (v2, i2) {
-          for (var i3 in v2) {
-            if (i3 == 'optionId' || i3 == 'optionValueId') {
-              v.propertyChildIds += v2[i3];
-              if (i3 == 'optionId') {
-                v.propertyChildIds += ':';
+        if (v.sku) {
+          v.sku.forEach(function (v2, i2) {
+            for (var i3 in v2) {
+              if (i3 == 'optionId' || i3 == 'optionValueId') {
+                v.propertyChildIds += v2[i3];
+                if (i3 == 'optionId') {
+                  v.propertyChildIds += ':';
+                }
+              }
+              if (i3 == 'optionName' || i3 == 'optionValueName') {
+                v.propertyChildNames += v2[i3];
+                if (i3 == 'optionName') {
+                  v.propertyChildNames += ':';
+                }
               }
             }
-            if (i3 == 'optionName' || i3 == 'optionValueName') {
-              v.propertyChildNames += v2[i3];
-              if (i3 == 'optionName') {
-                v.propertyChildNames += ':';
-              }
-            }
-          }
-          v.propertyChildIds += ',';
-          v.propertyChildNames += ',';
-        });
+            v.propertyChildIds += ',';
+            v.propertyChildNames += ',';
+          });
+        }
       });
       var orderGoodsStr = JSON.stringify(cartList);
       // 跳转到 订单页面

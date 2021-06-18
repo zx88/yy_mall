@@ -142,7 +142,7 @@ export default {
 		.active {
 			color: $themeColor;
 			border-left: 5rpx solid $themeColor;
-			font-size: 36rpx;
+			font-size: 32rpx;
 			font-weight: bold;
 		}
 	}

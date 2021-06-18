@@ -28,6 +28,9 @@
 .goods_list.data-v-8b1a97ba {
   height: calc(100vh - 0px - 90rpx);
 }
+.cart_empty.data-v-8b1a97ba {
+  height: calc(100vh - 0px - 90rpx);
+}
 .first_tab_list.data-v-8b1a97ba {
   padding: 0 10rpx;
 }

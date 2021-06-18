@@ -111,6 +111,13 @@
         {
           "name": "pages/address/manage",
           "pathName": "pages/address/manage",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/goods_list/index",
+          "pathName": "pages/goods_list/index",
+          "query": "id=235850",
           "scene": null
         }
       ]

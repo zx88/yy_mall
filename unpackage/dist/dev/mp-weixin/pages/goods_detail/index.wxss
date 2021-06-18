@@ -185,10 +185,9 @@
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
           flex-direction: column;
-  -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
-          justify-content: space-between;
-  padding: 20rpx 15rpx;
+  -webkit-justify-content: space-around;
+          justify-content: space-around;
+  padding: 10rpx 15rpx;
 }
 .popup_attr .goods_des .goods_des_txt .goods_pic.data-v-6c98f4d4 {
   font-size: 45rpx;
@@ -223,7 +222,6 @@
   background-color: #fffafb;
 }
 .popup_attr .goods_num.data-v-6c98f4d4 {
-  padding: 30rpx 0;
   font-size: 30rpx;
   font-weight: bold;
   color: #000000;
@@ -233,6 +231,10 @@
   -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
           justify-content: space-between;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+          align-items: center;
+  margin: 40rpx 0;
 }
 .popup_attr .goods_btn.data-v-6c98f4d4 {
   display: -webkit-box;

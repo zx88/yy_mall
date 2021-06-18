@@ -253,17 +253,17 @@ var _default =
     handleSwiper: function handleSwiper(index) {
       if (index === 0) {
         uni.navigateTo({
-          url: "../goods_list/index?cid=".concat(862) });
+          url: "../goods_list/index?id=".concat(233412) });
 
         return;
       } else if (index === 1) {
         uni.navigateTo({
-          url: "../goods_list/index?cid=".concat(12) });
+          url: "../goods_list/index?id=".concat(235850) });
 
         return;
       } else {
         uni.navigateTo({
-          url: "../goods_list/index?cid=".concat(200) });
+          url: "../goods_list/index?id=".concat(235850) });
 
         return;
       }
@@ -282,8 +282,8 @@ var _default =
                     bottomlist.push(v);
                   }
                 });
-                _this2.catesList[0] = toplist.slice(0, 9);
-                _this2.catesList[1] = bottomlist.slice(0, 9);case 11:case "end":return _context2.stop();}}}, _callee2);}))();
+                _this2.$set(_this2.catesList, 0, toplist.slice(0, 9));
+                _this2.$set(_this2.catesList, 1, bottomlist.slice(0, 9));case 11:case "end":return _context2.stop();}}}, _callee2);}))();
     },
     // 获取楼层数据
     getFloorList: function getFloorList() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var res;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:_context3.next = 2;return (

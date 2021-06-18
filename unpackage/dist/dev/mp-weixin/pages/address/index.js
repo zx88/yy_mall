@@ -220,7 +220,6 @@ var _default =
     if (options.pay) {
       this.isPay = !!options.pay;
     }
-    console.log(this.isPay);
   },
   onShow: function onShow() {
     this.getAddressList();
@@ -228,14 +227,13 @@ var _default =
   methods: {
     // 收货地址/zxapi/user/shipping-address/list/v2
     getAddressList: function getAddressList() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var res;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
-                  _this.$request({ method: 'post', url: '/user/shipping-address/list/v2', data: _this.query }));case 2:res = _context.sent;
-                console.log(res);if (!(
-                res.code === 700)) {_context.next = 6;break;}return _context.abrupt("return");case 6:
+                  _this.$request({ method: 'post', url: '/user/shipping-address/list/v2', data: _this.query }));case 2:res = _context.sent;if (!(
+                res.code === 700)) {_context.next = 5;break;}return _context.abrupt("return");case 5:
                 if (res.code === 0) {
                   _this.addressList = res.data.result;
                 }
                 // this.list = res.data;
-              case 7:case "end":return _context.stop();}}}, _callee);}))();},
+              case 6:case "end":return _context.stop();}}}, _callee);}))();},
     //选择地址回到订单界面
     chooseAddress: function chooseAddress(item) {
       if (!this.isPay) {
@@ -244,9 +242,7 @@ var _default =
       var pages = getCurrentPages();
       var prevPage = pages[pages.length - 2]; //上一个页面
       //直接调用上一个页面的setData()方法，把数据存到上一个页面中去
-      prevPage.setData({
-        setAddress: item });
-
+      prevPage.$vm.updeatAddress(item);
       uni.navigateBack();
     },
 

@@ -50,7 +50,6 @@ export default {
 		if (options.pay) {
 			this.isPay = !!options.pay;
 		}
-		console.log(this.isPay);
 	},
 	onShow() {
 		this.getAddressList();
@@ -59,7 +58,6 @@ export default {
 		// 收货地址/zxapi/user/shipping-address/list/v2
 		async getAddressList() {
 			const res = await this.$request({ method: 'post', url: '/user/shipping-address/list/v2', data: this.query });
-			console.log(res);
 			if (res.code === 700) return;
 			if (res.code === 0) {
 				this.addressList = res.data.result;
@@ -74,9 +72,7 @@ export default {
 			var pages = getCurrentPages();
 			var prevPage = pages[pages.length - 2]; //上一个页面
 			//直接调用上一个页面的setData()方法，把数据存到上一个页面中去
-			prevPage.setData({
-				setAddress: item
-			});
+			prevPage.$vm.updeatAddress(item);
 			uni.navigateBack();
 		},
 

@@ -18,12 +18,12 @@
 				<view class="goods_price_tag">免运费</view>
 			</view>
 			<view class="goods_other">
-				<view class="goods_sales">销量:{{ goodsInfo.numberSells }}</view>
+				<view class="goods_sales">销量:{{ goodsInfo.numberOrders }}</view>
 				<view class="goods_stock">库存:{{ goodsInfo.stores }}</view>
 				<view class="goods_text">浏览量:{{ goodsInfo.views }}</view>
 			</view>
 			<u-cell-group>
-				<u-cell-item title="购买类型" :value="skuDetail.propertyChildNames" @click="isAttrPopup = true"></u-cell-item>
+				<u-cell-item title="购买类型" :value="skuDetail.propertyChildNames || ''" @click="isAttrPopup = true"></u-cell-item>
 				<u-cell-item title="优惠卷" value="领取优惠卷" :value-style="{ color: '#e93b3d' }"></u-cell-item>
 				<u-cell-item title="服务" value="七天无理由退货,假一赔十!" :arrow="false"></u-cell-item>
 				<u-cell-item
@@ -71,7 +71,7 @@
 			</view>
 		</view>
 		<u-popup v-model="isAttrPopup" closeable border-radius="10" mode="bottom" @close="query.number = 1">
-			<view class="popup_attr">
+			<view v-if="goodsSkuList.length" class="popup_attr">
 				<view class="goods_des">
 					<view class="goods_des_img"><image :src="goodsInfo.pic" mode="widthFix"></image></view>
 					<view class="goods_des_txt">
@@ -91,6 +91,23 @@
 						>
 							{{ item2.name }}
 						</text>
+					</view>
+				</view>
+				<view class="goods_num">
+					<text>数量</text>
+					<u-number-box :min="1" v-model="query.number"></u-number-box>
+				</view>
+				<view class="goods_btn">
+					<view class="cart_btn" @click="handleCartAdd">加入购物车</view>
+					<view class="buy_btn" @click="handlePay">立即购买</view>
+				</view>
+			</view>
+			<view v-else class="popup_attr">
+				<view class="goods_des">
+					<view class="goods_des_img"><image :src="goodsInfo.pic" mode="widthFix"></image></view>
+					<view class="goods_des_txt">
+						<view class="goods_pic">￥{{ goodsInfo.minPrice }}</view>
+						<view class="goods_stk">库存: {{ goodsInfo.stores }}</view>
 					</view>
 				</view>
 				<view class="goods_num">
@@ -158,15 +175,17 @@ export default {
 			this.goodsImgList = pics;
 			this.goodsInfo = basicInfo;
 			this.goodsContent = content;
-			this.goodsProperties = properties;
-			this.goodsSkuList = skuList;
-			// 首次进入默认选中第一个规格
-			this.goodsProperties.forEach((v, i) => {
-				this.skuArr[i] = { optionId: v.id, optionValueId: v.childsCurGoods[0].id };
-				this.isActive.push(v.childsCurGoods[0].id);
-			});
-			this.query.sku = JSON.stringify(this.skuArr);
-			this.getStuDetail();
+			if (skuList) {
+				this.goodsProperties = properties;
+				this.goodsSkuList = skuList;
+				// 首次进入默认选中第一个规格
+				this.goodsProperties.forEach((v, i) => {
+					this.skuArr[i] = { optionId: v.id, optionValueId: v.childsCurGoods[0].id };
+					this.isActive.push(v.childsCurGoods[0].id);
+				});
+				this.query.sku = JSON.stringify(this.skuArr);
+				this.getStuDetail();
+			}
 		},
 		// 点击预览大图
 		handlePrevewImage(e) {
@@ -235,14 +254,27 @@ export default {
 		},
 		// 点击结算,前往提交订单界面
 		handlePay() {
-			let orderGoods = [
+			var orderGoods = [
 				{
 					...this.skuDetail,
 					number: this.query.number,
 					pic: this.goodsInfo.pic,
-					name: this.goodsInfo.name
+					name: this.goodsInfo.name,
+					type: 1
 				}
 			];
+			if (this.goodsSkuList.length === 0) {
+				var orderGoods = [
+					{
+						price: this.goodsInfo.minPrice,
+						number: this.query.number,
+						pic: this.goodsInfo.pic,
+						name: this.goodsInfo.name,
+						goodsId: this.goodsInfo.id,
+						type: 1
+					}
+				];
+			}
 			const orderGoodsStr = JSON.stringify(orderGoods);
 			this.navTo(`/pages/pay/index?orderGoods=${orderGoodsStr}`, { login: true });
 		}
@@ -388,8 +420,8 @@ export default {
 			flex: 5;
 			display: flex;
 			flex-direction: column;
-			justify-content: space-between;
-			padding: 20rpx 15rpx;
+			justify-content: space-around;
+			padding: 10rpx 15rpx;
 			.goods_pic {
 				// margin-top: 15rpx;
 				font-size: 45rpx;
@@ -425,12 +457,13 @@ export default {
 		}
 	}
 	.goods_num {
-		padding: 30rpx 0;
 		font-size: 30rpx;
 		font-weight: bold;
 		color: #000000;
 		display: flex;
 		justify-content: space-between;
+		align-items: center;
+		margin: 40rpx 0;
 	}
 	.goods_btn {
 		display: flex;

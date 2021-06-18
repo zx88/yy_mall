@@ -190,7 +190,7 @@ export default {
 			this.cartList = res.data.items;
 			this.setCart(this.cartList);
 		},
-		// 点击 结算前往提交订单界面
+		// 点击结算,前往提交订单界面
 		handlePay() {
 			let { totalNum, cartList } = this;
 			//  判断用户有没有选购商品
@@ -201,27 +201,29 @@ export default {
 			cartList.forEach((v, i) => {
 				v.propertyChildIds = '';
 				v.propertyChildNames = '';
-				v.sku.forEach((v2, i2) => {
-					for (let i3 in v2) {
-						if (i3 == 'optionId' || i3 == 'optionValueId') {
-							v.propertyChildIds += v2[i3];
-							if (i3 == 'optionId') {
-								v.propertyChildIds += ':';
+				if (v.sku) {
+					v.sku.forEach((v2, i2) => {
+						for (let i3 in v2) {
+							if (i3 == 'optionId' || i3 == 'optionValueId') {
+								v.propertyChildIds += v2[i3];
+								if (i3 == 'optionId') {
+									v.propertyChildIds += ':';
+								}
+							}
+							if (i3 == 'optionName' || i3 == 'optionValueName') {
+								v.propertyChildNames += v2[i3];
+								if (i3 == 'optionName') {
+									v.propertyChildNames += ':';
+								}
 							}
 						}
-						if (i3 == 'optionName' || i3 == 'optionValueName') {
-							v.propertyChildNames += v2[i3];
-							if (i3 == 'optionName') {
-								v.propertyChildNames += ':';
-							}
-						}
-					}
-					v.propertyChildIds += ',';
-					v.propertyChildNames += ',';
-				});
+						v.propertyChildIds += ',';
+						v.propertyChildNames += ',';
+					});
+				}
 			});
 			const orderGoodsStr = JSON.stringify(cartList);
-			 // 跳转到 订单页面
+			// 跳转到 订单页面
 			uni.navigateTo({
 				url: `/pages/pay/index?orderGoods=${orderGoodsStr}`
 			});
@@ -269,7 +271,7 @@ export default {
 			}
 			.goods_attr {
 				color: #a5a5a5;
-				text{
+				text {
 					font-size: 24rpx;
 				}
 			}

@@ -1,18 +1,11 @@
 <template>
 	<view class="tabs">
 		<view class="tabs_title">
-			<view
-				v-for="item in tabs"
-				:key="item.id"
-				:class="item.isActive ? 'title_item active' : 'title_item'"
-				@click="handleItemTap(item.id)"
-			>
+			<view v-for="item in tabs" :key="item.id" :class="item.isActive ? 'title_item active' : 'title_item'" @click="handleItemTap(item.id)">
 				{{ item.value }}
-				<view class="" v-if="item.id == 2">
-					<view :class="item.isActive && item.isSort ? 'top_triangle top_active' : 'top_triangle'"></view>
-					<view
-						:class="item.isActive && !item.isSort ? 'buttom_triangle buttom_active' : 'buttom_triangle'"
-					></view>
+				<view class="" v-if="item.isSort">
+					<view :class="item.isActive && item.isSort == 'top' ? 'top_triangle top_active' : 'top_triangle'"></view>
+					<view :class="item.isActive && item.isSort == 'bottom' ? 'buttom_triangle buttom_active' : 'buttom_triangle'"></view>
 				</view>
 			</view>
 			<view class="right_btn" @click="handleRightBtn">

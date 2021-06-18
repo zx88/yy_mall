@@ -95,25 +95,20 @@ export default {
 		return {
 			address: {},
 			orderGoods: [],
-			remarks: '',
-			totalPrice: 0
+			remarks: '', //备注
+			totalPrice: 0, //总价
+			isInto: 0 //下单方式,购物车/直接购买
 		};
 	},
 	onLoad(options) {
 		// 获取购买列表
 		this.orderGoods = JSON.parse(options.orderGoods);
-		this.setPrice(this.orderGoods);
-	},
-	onShow(e) {
-		// 选择收货地址
-		let pages = getCurrentPages();
-		let currPage = pages[pages.length - 1];
-		if (currPage.data.setAddress !== undefined) {
-			this.address = currPage.data.setAddress;
-		} else {
-			// 默认收货地址
-			this.getDefaultaddress();
+		if (this.orderGoods[0].type) {
+			this.isInto = 1;
 		}
+		this.setPrice(this.orderGoods);
+		// 收货地址
+		this.getDefaultaddress();
 	},
 	methods: {
 		// 计算总价
@@ -125,29 +120,33 @@ export default {
 			});
 			this.totalPrice = totalPrice;
 		},
-
 		// 默认收货地址
 		async getDefaultaddress() {
 			const res = await this.$request({ url: '/user/shipping-address/default/v2' });
 			if (res.code !== 0) return;
 			this.address = res.data.info;
 		},
-		// JSON.stringify(this.skuArr);
+		// 收货地址页面调用方法修改地址
+		updeatAddress(data) {
+			this.address = data;
+		},
 		// 前往支付页面
 		async createOrder() {
 			const orderGoods = this.orderGoods.map(({ goodsId, number, propertyChildIds }) => {
 				return { goodsId, number, propertyChildIds };
 			});
 			const goodsJsonStr = JSON.stringify(orderGoods);
-			const res = await this.$request({
-				method: 'post',
-				url: '/order/create',
-				data: { ...this.address, goodsJsonStr, peisongType: 'kd' }
-			});
-			// console.log(res);
+			const res = await this.$request({ method: 'post', url: '/order/create', data: { ...this.address, goodsJsonStr, peisongType: 'kd' } });
+			if (res.code !== 0) return;
+			//清空购物车/{domain}/shopping-cart/empty
+			if (!this.isInto) {
+				var res2 = await this.$request({ method: 'post', url: '/shopping-cart/empty' });
+				//需要更新购物车
+				this.$store.commit('setUpdateCart', true);
+			}
+			this.$util.msg('订单创建成功,无支付接口');
 			// 更新订单数量
 			this.$store.dispatch('getOrderCount');
-			this.$util.msg('订单创建成功,暂无支付接口');
 		}
 	}
 };

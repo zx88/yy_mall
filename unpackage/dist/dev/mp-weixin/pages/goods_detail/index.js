@@ -295,6 +295,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var _default =
 {
   data: function data() {
@@ -347,15 +364,17 @@ var _default =
                 _this2.goodsImgList = pics;
                 _this2.goodsInfo = basicInfo;
                 _this2.goodsContent = content;
-                _this2.goodsProperties = properties;
-                _this2.goodsSkuList = skuList;
-                // 首次进入默认选中第一个规格
-                _this2.goodsProperties.forEach(function (v, i) {
-                  _this2.skuArr[i] = { optionId: v.id, optionValueId: v.childsCurGoods[0].id };
-                  _this2.isActive.push(v.childsCurGoods[0].id);
-                });
-                _this2.query.sku = JSON.stringify(_this2.skuArr);
-                _this2.getStuDetail();case 14:case "end":return _context2.stop();}}}, _callee2);}))();
+                if (skuList) {
+                  _this2.goodsProperties = properties;
+                  _this2.goodsSkuList = skuList;
+                  // 首次进入默认选中第一个规格
+                  _this2.goodsProperties.forEach(function (v, i) {
+                    _this2.skuArr[i] = { optionId: v.id, optionValueId: v.childsCurGoods[0].id };
+                    _this2.isActive.push(v.childsCurGoods[0].id);
+                  });
+                  _this2.query.sku = JSON.stringify(_this2.skuArr);
+                  _this2.getStuDetail();
+                }case 10:case "end":return _context2.stop();}}}, _callee2);}))();
     },
     // 点击预览大图
     handlePrevewImage: function handlePrevewImage(e) {
@@ -429,9 +448,22 @@ var _default =
       this.skuDetail), {}, {
         number: this.query.number,
         pic: this.goodsInfo.pic,
-        name: this.goodsInfo.name })];
+        name: this.goodsInfo.name,
+        type: 1 })];
 
 
+      if (this.goodsSkuList.length === 0) {
+        var orderGoods = [
+        {
+          price: this.goodsInfo.minPrice,
+          number: this.query.number,
+          pic: this.goodsInfo.pic,
+          name: this.goodsInfo.name,
+          goodsId: this.goodsInfo.id,
+          type: 1 }];
+
+
+      }
       var orderGoodsStr = JSON.stringify(orderGoods);
       this.navTo("/pages/pay/index?orderGoods=".concat(orderGoodsStr), { login: true });
     } } };exports.default = _default;

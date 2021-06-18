@@ -55,7 +55,7 @@
 .cates_container .left_menu .active.data-v-2f754cba {
   color: #e93b3d;
   border-left: 5rpx solid #e93b3d;
-  font-size: 36rpx;
+  font-size: 32rpx;
   font-weight: bold;
 }
 .cates_container .right_content.data-v-2f754cba {
