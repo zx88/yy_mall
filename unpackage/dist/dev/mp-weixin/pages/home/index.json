@@ -5,6 +5,7 @@
     "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
     "u-icon": "/uview-ui/components/u-icon/u-icon",
     "u-swiper": "/uview-ui/components/u-swiper/u-swiper",
-    "u-card": "/uview-ui/components/u-card/u-card"
+    "u-card": "/uview-ui/components/u-card/u-card",
+    "search": "/components/content/Search"
   }
 }

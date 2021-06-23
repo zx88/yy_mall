@@ -388,15 +388,21 @@ var _default =
 
     },
     // 点击 加入购物车
-    handleCartAdd: function handleCartAdd() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var query, res;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:
+    handleCartAdd: function handleCartAdd() {var _this3 = this;
+      uni.showLoading({
+        title: '加载中' });
+
+      this.$util.debounce( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var query, res;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:
                 _this3.$store.commit('setUpdateCart', true);
                 query = _this3.query;_context3.next = 4;return (
                   _this3.$request({ method: 'post', url: '/shopping-cart/add', data: query }, { login: true }));case 4:res = _context3.sent;
-                // if (res.code === 10000) return;
                 if (res.code === 0) {
                   _this3.$util.msg('加入购物车成功', { icon: 'success' });
                   _this3.$store.commit('setCartCount', res.data.number); //更新购物车数量
-                }case 6:case "end":return _context3.stop();}}}, _callee3);}))();
+                } else {
+                  _this3.$util.msg('加入购物车失败');
+                }case 6:case "end":return _context3.stop();}}}, _callee3);})),
+      500);
     },
     // 收藏
     handleCollect: function handleCollect() {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {var res, _res;return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:if (!(

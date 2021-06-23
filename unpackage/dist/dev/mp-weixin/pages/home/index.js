@@ -162,73 +162,74 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 8));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 8));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var Search = function Search() {__webpack_require__.e(/*! require.ensure | components/content/Search */ "components/content/Search").then((function () {return resolve(__webpack_require__(/*! ../../components/content/Search.vue */ 255));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {
+  components: {
+    Search: Search },
+
   data: function data() {
     return {
       // 轮播图数组
@@ -271,8 +272,9 @@ var _default =
     // 获取分类导航
     getCateList: function getCateList() {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var res, catesList, toplist, bottomlist;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
                   _this2.$request({ url: '/shop/goods/category/all' }));case 2:res = _context2.sent;
-                catesList = res.data.filter(function (v) {return v.pid == 0;});if (!(
-                res.code !== 0)) {_context2.next = 6;break;}return _context2.abrupt("return", _this2.$util.msg('获取导航数据失败'));case 6:
+                catesList = res.data.filter(function (v) {return v.pid == 0;});
+                console.log(catesList);if (!(
+                res.code !== 0)) {_context2.next = 7;break;}return _context2.abrupt("return", _this2.$util.msg('获取导航数据失败'));case 7:
                 toplist = [];
                 bottomlist = [];
                 catesList.forEach(function (v, i) {
@@ -283,7 +285,7 @@ var _default =
                   }
                 });
                 _this2.$set(_this2.catesList, 0, toplist.slice(0, 9));
-                _this2.$set(_this2.catesList, 1, bottomlist.slice(0, 9));case 11:case "end":return _context2.stop();}}}, _callee2);}))();
+                _this2.$set(_this2.catesList, 1, bottomlist.slice(0, 9));case 12:case "end":return _context2.stop();}}}, _callee2);}))();
     },
     // 获取楼层数据
     getFloorList: function getFloorList() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var res;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:_context3.next = 2;return (

@@ -1,6 +1,6 @@
 <template>
-	<!-- <Loading v-if="!goodsSkuList.length"></Loading> -->
-	<view>
+	<Loading v-if="!goodsImgList.length"></Loading>
+	<view v-else>
 		<!-- 货物图片轮播 -->
 		<view class="detail_swiper">
 			<swiper indicator-active-color="#ff0000" indicator-color="#d8d8d8" indicator-dots autoplay :interval="3000" :duration="1000" circular>
@@ -199,15 +199,21 @@ export default {
 			});
 		},
 		// 点击 加入购物车
-		async handleCartAdd() {
-			this.$store.commit('setUpdateCart', true);
-			let query = this.query;
-			const res = await this.$request({ method: 'post', url: '/shopping-cart/add', data: query }, { login: true });
-			// if (res.code === 10000) return;
-			if (res.code === 0) {
-				this.$util.msg('加入购物车成功', { icon: 'success' });
-				this.$store.commit('setCartCount', res.data.number); //更新购物车数量
-			}
+		handleCartAdd() {
+			uni.showLoading({
+				title:'加载中'
+			})
+			this.$util.debounce(async ()=>{
+				this.$store.commit('setUpdateCart', true);
+				let query = this.query;
+				const res = await this.$request({ method: 'post', url: '/shopping-cart/add', data: query }, { login: true });
+				if (res.code === 0) {
+					this.$util.msg('加入购物车成功', { icon: 'success' });
+					this.$store.commit('setCartCount', res.data.number); //更新购物车数量
+				}else{
+					this.$util.msg('加入购物车失败');
+				}
+			},500)
 		},
 		// 收藏
 		async handleCollect() {

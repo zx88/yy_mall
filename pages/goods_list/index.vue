@@ -1,55 +1,40 @@
 <template>
 	<view>
-		<Tabs :tabs="tabs" @handleTabsTitle="showListSort" @handleTabsRight="showListStyle">
-			<scroll-view
-				v-if="goodsList.length"
-				class="goods_list"
-				scroll-y="true"
-				:lower-threshold="30"
-				refresher-enabled
-				:refresher-triggered="triggered"
-				:scroll-top="scrollTop"
-				@scroll="pageScroll"
-				@scrolltolower="scrolltolower"
-				@refresherrefresh="refresherrefresh"
-			>
-				<view>
-					<view :class="isListStyle ? 'first_tab_list' : 'first_tab_img'">
-						<view class="goods_item_box" v-for="(item, index) in goodsList" :key="index">
-							<u-card class="card" margin="10rpx" padding="20" :show-foot="false" :show-head="false">
-								<navigator :url="`../goods_detail/index?id=${item.id}`" slot="body" class="goods_item">
-									<!-- 左侧 图片容器 -->
-									<view class="goods_img_wrap">
-										<image
-											:src="item.pic ? item.pic : 'https://ww1.sinaimg.cn/large/007rAy9hgy1g24by9t530j30i20i2glm.jpg'"
-										></image>
-									</view>
-									<!-- 右侧 商品容器 -->
-									<view class="goods_info_wrap">
-										<view class="goods_name">{{ item.name }}</view>
-										<view class="goods_num">销量: {{ item.numberOrders }}</view>
-										<view class="goods_price">
-											￥{{ item.minPrice }}
-											<text class="old_price">￥{{ item.originalPrice }}</text>
-										</view>
-									</view>
-								</navigator>
-							</u-card>
-						</view>
-					</view>
-				</view>
-				<u-loadmore v-if="totalPage > 1" :status="loadMore" margin-bottom="25" />
-			</scroll-view>
-			<view v-else class="cart_empty"><u-empty text="暂时没有数据" mode="favor"></u-empty></view>
-			<!-- 返回顶部 -->
-			<view v-show="isBackTop" class="BackTop" @click="handleBackTop"><u-icon name="arrow-upward"></u-icon></view>
-		</Tabs>
+		<tab-control :tab-title="tabs" @handleTabsTitle="showListSort">
+			<view slot="right" class="tabs_right" @click="isList = !isList">
+				<u-icon v-show="!isList" name="grid"></u-icon>
+				<u-icon v-show="isList" name="list-dot"></u-icon>
+			</view>
+		</tab-control>
+		<scroll-view
+			v-if="goodsList.length"
+			class="goods_list"
+			scroll-y="true"
+			:lower-threshold="30"
+			refresher-enabled
+			:refresher-triggered="triggered"
+			:scroll-top="scrollTop"
+			@scroll="pageScroll"
+			@scrolltolower="scrolltolower"
+			@refresherrefresh="refresherrefresh"
+		>
+			<goods-list :goods-list="goodsList" :is-list="isList"></goods-list>
+			<u-loadmore v-if="totalPage > 1" :status="loadMore" margin-bottom="25" />
+		</scroll-view>
+		<view v-else class="cart_empty"><u-empty text="暂时没有数据" mode="favor"></u-empty></view>
+		<!-- 返回顶部 -->
+		<view v-show="isBackTop" class="BackTop" @click="handleBackTop"><u-icon name="arrow-upward"></u-icon></view>
 	</view>
 </template>
 
 <script>
-import Tabs from '@/components/Tabs.vue';
+import TabControl from '../../components/content/TabControl.vue';
+import GoodsList from '../../components/content/GoodsList.vue';
 export default {
+	components: {
+		TabControl,
+		GoodsList
+	},
 	data() {
 		return {
 			// 顶部排序选择
@@ -79,7 +64,7 @@ export default {
 				}
 			],
 			// 显示模式大图/列表
-			isListStyle: true,
+			isList: true,
 			// 列表数据
 			goodsList: [],
 			// 接口请求参数
@@ -100,9 +85,6 @@ export default {
 			triggered: false,
 			loadMore: 'loading'
 		};
-	},
-	components: {
-		Tabs: Tabs
 	},
 	onLoad(options) {
 		this.QueryParams.categoryId = options.id || '';
@@ -154,10 +136,6 @@ export default {
 			// 关闭下拉刷新的窗口
 			this.triggered = false;
 		},
-		// 切换列表或大图显示
-		showListStyle(e) {
-			this.isListStyle = e;
-		},
 		// 选择排序方式
 		showListSort(index) {
 			this.tabs.forEach((v, i) => (i === index ? (v.isActive = true) : (v.isActive = false)));
@@ -207,111 +185,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.tabs_right {
+	width: 80rpx;
+	line-height: 80rpx;
+	text-align: center;
+	box-shadow: -10rpx 0 0 0 #f1f1f1;
+	font-size: 55rpx;
+	color: #8a8a8a;
+}
 .goods_list {
-	height: calc(100vh - var(--window-top) - 90rpx);
+	height: calc(100vh - var(--window-top) - 92rpx);
 }
 .cart_empty {
-	height: calc(100vh - var(--window-top) - 90rpx);
-}
-.first_tab_list {
-	padding: 0 10rpx;
-	.goods_item {
-		display: flex;
-		.goods_img_wrap {
-			// flex: 2;
-			width: 180rpx;
-			height: 180rpx;
-			overflow: hidden;
-			border-radius: 15rpx;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			image {
-				width: 100%;
-				height: 100%;
-			}
-		}
-		.goods_info_wrap {
-			flex: 1;
-			display: flex;
-			flex-direction: column;
-			justify-content: space-around;
-			padding-left: 20rpx;
-			.goods_name {
-				font-size: 32rpx;
-				color: #000;
-				display: -webkit-box;
-				overflow: hidden;
-				-webkit-box-orient: vertical;
-				-webkit-line-clamp: 1;
-			}
-			.goods_num {
-				color: #8f8f8f;
-			}
-			.goods_price {
-				color: $themeColor;
-				font-size: 34rpx;
-				font-weight: 600;
-				.old_price {
-					font-size: 26rpx;
-					margin-left: 10rpx;
-					text-decoration: line-through;
-					color: #8f8f8f;
-					font-weight: normal;
-				}
-			}
-		}
-	}
-}
-.first_tab_img {
-	display: flex;
-	flex-wrap: wrap;
-	padding: 0 10rpx;
-	.goods_item_box {
-		width: 50%;
-		.goods_item {
-			// height: 450rpx;
-			display: flex;
-			flex-direction: column;
-			.goods_img_wrap {
-				height: 300rpx;
-				overflow: hidden;
-				border-radius: 8rpx;
-				image {
-					width: 100%;
-					height: 100%;
-				}
-			}
-			.goods_info_wrap {
-				display: flex;
-				flex-direction: column;
-				.goods_name {
-					margin-top: 10rpx;
-					font-size: 32rpx;
-					color: #000;
-					display: -webkit-box;
-					overflow: hidden;
-					-webkit-box-orient: vertical;
-					-webkit-line-clamp: 2;
-				}
-				.goods_num {
-					display: none;
-				}
-				.goods_price {
-					color: $themeColor;
-					font-size: 34rpx;
-					font-weight: 600;
-					.old_price {
-						font-size: 26rpx;
-						margin-left: 10rpx;
-						text-decoration: line-through;
-						color: #8f8f8f;
-						font-weight: normal;
-					}
-				}
-			}
-		}
-	}
+	height: calc(100vh - var(--window-top) - 92rpx);
 }
 .BackTop {
 	position: fixed;

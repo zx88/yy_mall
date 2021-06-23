@@ -1,48 +1,40 @@
 <template>
 	<view>
-		<Tabs :tabs="tabs" @handleTabsTitle="showListSort" @handleTabsRight="showListStyle">
-			<scroll-view
-				v-if="collectList.length"
-				class="goods_list"
-				scroll-y="true"
-				lower-threshold="30"
-				refresher-enabled="true"
-				:refresher-triggered="triggered"
-				:scroll-top="scrollTop"
-				@scroll="pageScroll"
-				@scrolltolower="scrolltolower"
-				@refresherrefresh="refresherrefresh"
-			>
-				<view v-if="tabs[0].isActive" :class="isListStyle ? 'first_tab_list' : 'first_tab_img'">
-					<view class="goods_item_box" v-for="item in collectList" :key="item.id">
-						<u-card class="card" margin="10rpx" padding="20" :show-foot="false" :show-head="false">
-							<navigator :url="`../goods_detail/index?id=${item.goodsId}`" slot="body" class="goods_item">
-								<!-- 左侧 图片容器 -->
-								<view class="goods_img_wrap">
-									<image :src="item.pic ? item.pic : 'https://ww1.sinaimg.cn/large/007rAy9hgy1g24by9t530j30i20i2glm.jpg'"></image>
-								</view>
-								<!-- 右侧 商品容器 -->
-								<view class="goods_info_wrap">
-									<view class="goods_name">{{ item.goodsName }}</view>
-									<view class="goods_num">日期: {{ item.dateAdd }}</view>
-								</view>
-							</navigator>
-						</u-card>
-					</view>
-				</view>
-				<view v-else-if="tabs[1].isActive">店铺收藏</view>
-				<u-loadmore v-if="totalPages > 1" :status="loadMore" margin-bottom="25" />
-			</scroll-view>
-			<view v-else class="cart_empty"><u-empty text="暂时没有数据" mode="favor"></u-empty></view>
-			<!-- 返回顶部 -->
-			<view v-show="isBackTop" class="BackTop" @click="handleBackTop"><u-icon name="arrow-upward"></u-icon></view>
-		</Tabs>
+		<tab-control :tab-title="tabs" @handleTabsTitle="showListSort"></tab-control>
+		<scroll-view
+			class="goods_list"
+			scroll-y="true"
+			lower-threshold="30"
+			refresher-enabled="true"
+			:refresher-triggered="triggered"
+			:scroll-top="scrollTop"
+			@scroll="pageScroll"
+			@scrolltolower="scrolltolower"
+			@refresherrefresh="refresherrefresh"
+		>
+			<goods-list v-if="tabs[0].isActive" :goods-list="collectList" :is-list="false"></goods-list>
+			<empty v-if="tabs[0].isActive && !collectList.length" :text="'暂时没有数据'" :icon="'favor'"></empty>
+			<goods-list v-if="tabs[1].isActive" :is-list="false"></goods-list>
+			<empty v-if="tabs[1].isActive && !false" :text="'暂时没有数据'" :icon="'favor'"></empty>
+			<u-loadmore v-if="totalPages > 1" :status="loadMore" margin-bottom="25" />
+		</scroll-view>
+
+		<!-- <view  class="cart_empty"><u-empty text="暂时没有数据" mode="favor"></u-empty></view> -->
+		<!-- 返回顶部 -->
+		<view v-show="isBackTop" class="BackTop" @click="handleBackTop"><u-icon name="arrow-upward"></u-icon></view>
 	</view>
 </template>
 
 <script>
-import Tabs from '@/components/Tabs.vue';
+import TabControl from '../../components/content/TabControl.vue';
+import GoodsList from '../../components/content/GoodsList.vue';
+import Empty from '../../components/content/Empty.vue';
 export default {
+	components: {
+		TabControl,
+		GoodsList,
+		Empty
+	},
 	data() {
 		return {
 			// 顶部排序选择
@@ -58,8 +50,6 @@ export default {
 					isActive: false
 				}
 			],
-			// 显示模式大图/列表
-			isListStyle: false,
 			// 列表数据
 			collectList: [],
 			// 接口请求参数
@@ -87,9 +77,7 @@ export default {
 		}
 		this.getCollectList();
 	},
-	components: {
-		Tabs
-	},
+
 	methods: {
 		// 获取商品收藏列表
 		async getCollectList() {
@@ -100,6 +88,7 @@ export default {
 				this.collectList = [...this.collectList, ...res.data];
 				this.triggered = false;
 			}
+			console.log(this.collectList);
 		},
 
 		// 点击回到顶部
@@ -142,90 +131,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.cart_empty {
-	height: calc(100vh - var(--window-top) - 90rpx);
-}
 .goods_list {
-	height: calc(100vh - var(--window-top) - 90rpx);
+	height: calc(100vh - var(--window-top) - 92rpx);
 }
-.first_tab_list {
-	padding: 0 10rpx;
-	.goods_item {
-		display: flex;
-		.goods_img_wrap {
-			// flex: 2;
-			width: 180rpx;
-			height: 180rpx;
-			overflow: hidden;
-			border-radius: 10rpx;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			image {
-				width: 100%;
-				height: 100%;
-			}
-		}
-		.goods_info_wrap {
-			flex: 1;
-			display: flex;
-			flex-direction: column;
-			justify-content: space-around;
-			padding-left: 20rpx;
-			.goods_name {
-				font-size: 32rpx;
-				color: #000;
-				display: -webkit-box;
-				overflow: hidden;
-				-webkit-box-orient: vertical;
-				-webkit-line-clamp: 2;
-			}
-			.goods_num {
-				font-size: 28rpx;
-				color: #8f8f8f;
-			}
-		}
-	}
-}
-.first_tab_img {
-	display: flex;
-	flex-wrap: wrap;
-	padding: 0 10rpx;
-	.goods_item_box {
-		width: 50%;
-		.goods_item {
-			// height: 450rpx;
-			display: flex;
-			flex-direction: column;
-			.goods_img_wrap {
-				height: 300rpx;
-				overflow: hidden;
-				border-radius: 8rpx;
-				image {
-					width: 100%;
-					height: 100%;
-				}
-			}
-			.goods_info_wrap {
-				display: flex;
-				flex-direction: column;
-				.goods_name {
-					margin-top: 10rpx;
-					font-size: 32rpx;
-					color: #000;
-					display: -webkit-box;
-					overflow: hidden;
-					-webkit-box-orient: vertical;
-					-webkit-line-clamp: 2;
-				}
-			}
-			.goods_num {
-				font-size: 25rpx;
-				color: #8f8f8f;
-			}
-		}
-	}
-}
+
 .BackTop {
 	position: fixed;
 	right: 50rpx;

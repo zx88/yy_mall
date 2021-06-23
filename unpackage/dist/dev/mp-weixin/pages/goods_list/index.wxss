@@ -25,138 +25,19 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.tabs_right.data-v-8b1a97ba {
+  width: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  box-shadow: -10rpx 0 0 0 #f1f1f1;
+  font-size: 55rpx;
+  color: #8a8a8a;
+}
 .goods_list.data-v-8b1a97ba {
-  height: calc(100vh - 0px - 90rpx);
+  height: calc(100vh - 0px - 92rpx);
 }
 .cart_empty.data-v-8b1a97ba {
-  height: calc(100vh - 0px - 90rpx);
-}
-.first_tab_list.data-v-8b1a97ba {
-  padding: 0 10rpx;
-}
-.first_tab_list .goods_item.data-v-8b1a97ba {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-}
-.first_tab_list .goods_item .goods_img_wrap.data-v-8b1a97ba {
-  width: 180rpx;
-  height: 180rpx;
-  overflow: hidden;
-  border-radius: 15rpx;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-          justify-content: center;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-          align-items: center;
-}
-.first_tab_list .goods_item .goods_img_wrap image.data-v-8b1a97ba {
-  width: 100%;
-  height: 100%;
-}
-.first_tab_list .goods_item .goods_info_wrap.data-v-8b1a97ba {
-  -webkit-box-flex: 1;
-  -webkit-flex: 1;
-          flex: 1;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: column;
-          flex-direction: column;
-  -webkit-justify-content: space-around;
-          justify-content: space-around;
-  padding-left: 20rpx;
-}
-.first_tab_list .goods_item .goods_info_wrap .goods_name.data-v-8b1a97ba {
-  font-size: 32rpx;
-  color: #000;
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-}
-.first_tab_list .goods_item .goods_info_wrap .goods_num.data-v-8b1a97ba {
-  color: #8f8f8f;
-}
-.first_tab_list .goods_item .goods_info_wrap .goods_price.data-v-8b1a97ba {
-  color: #e93b3d;
-  font-size: 34rpx;
-  font-weight: 600;
-}
-.first_tab_list .goods_item .goods_info_wrap .goods_price .old_price.data-v-8b1a97ba {
-  font-size: 26rpx;
-  margin-left: 10rpx;
-  text-decoration: line-through;
-  color: #8f8f8f;
-  font-weight: normal;
-}
-.first_tab_img.data-v-8b1a97ba {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-wrap: wrap;
-          flex-wrap: wrap;
-  padding: 0 10rpx;
-}
-.first_tab_img .goods_item_box.data-v-8b1a97ba {
-  width: 50%;
-}
-.first_tab_img .goods_item_box .goods_item.data-v-8b1a97ba {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: column;
-          flex-direction: column;
-}
-.first_tab_img .goods_item_box .goods_item .goods_img_wrap.data-v-8b1a97ba {
-  height: 300rpx;
-  overflow: hidden;
-  border-radius: 8rpx;
-}
-.first_tab_img .goods_item_box .goods_item .goods_img_wrap image.data-v-8b1a97ba {
-  width: 100%;
-  height: 100%;
-}
-.first_tab_img .goods_item_box .goods_item .goods_info_wrap.data-v-8b1a97ba {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: column;
-          flex-direction: column;
-}
-.first_tab_img .goods_item_box .goods_item .goods_info_wrap .goods_name.data-v-8b1a97ba {
-  margin-top: 10rpx;
-  font-size: 32rpx;
-  color: #000;
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-.first_tab_img .goods_item_box .goods_item .goods_info_wrap .goods_num.data-v-8b1a97ba {
-  display: none;
-}
-.first_tab_img .goods_item_box .goods_item .goods_info_wrap .goods_price.data-v-8b1a97ba {
-  color: #e93b3d;
-  font-size: 34rpx;
-  font-weight: 600;
-}
-.first_tab_img .goods_item_box .goods_item .goods_info_wrap .goods_price .old_price.data-v-8b1a97ba {
-  font-size: 26rpx;
-  margin-left: 10rpx;
-  text-decoration: line-through;
-  color: #8f8f8f;
-  font-weight: normal;
+  height: calc(100vh - 0px - 92rpx);
 }
 .BackTop.data-v-8b1a97ba {
   position: fixed;

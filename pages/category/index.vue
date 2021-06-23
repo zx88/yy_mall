@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import Search from '../../components/Search.vue';
+import Search from '../../components/content/Search.vue';
 export default {
 	data() {
 		return {

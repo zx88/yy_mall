@@ -7,10 +7,7 @@
 					<navigator url="/pages/notify/index"><u-icon name="chat"></u-icon></navigator>
 				</view>
 				<view class="nav_search">
-					<navigator url="/pages/search/index">
-						<u-icon name="search"></u-icon>
-						输入关键字搜索
-					</navigator>
+					<search></search>
 				</view>
 			</view>
 		</u-navbar>
@@ -64,7 +61,11 @@
 </template>
 
 <script>
+	import Search from '../../components/content/Search.vue'
 export default {
+	components:{
+		Search
+	},
 	data() {
 		return {
 			// 轮播图数组
@@ -108,6 +109,7 @@ export default {
 		async getCateList() {
 			const res = await this.$request({ url: '/shop/goods/category/all' });
 			var catesList = res.data.filter(v => v.pid == 0);
+			console.log(catesList);
 			if (res.code !== 0) return this.$util.msg('获取导航数据失败');
 			let toplist = [];
 			let bottomlist = [];
@@ -141,25 +143,15 @@ export default {
 .navbar_box {
 	display: flex;
 	align-items: center;
-	flex: 1;
 	padding: 0 15rpx;
+	flex: 1;
 	.nav_notify {
 		font-size: 55rpx;
 		width: 80rpx;
 		text-align: center;
 	}
-	.nav_search {
-		height: 80rpx;
+	.nav_search{
 		flex: 1;
-		padding: 10rpx;
-		navigator {
-			height: 100%;
-			line-height: 60rpx;
-			text-align: center;
-			background-color: #f1f1f1;
-			border-radius: 40rpx;
-			color: #666;
-		}
 	}
 }
 .top_box {
