@@ -1,13 +1,9 @@
 <template>
-	<view>
-		<!-- 		<u-navbar
-			:is-back="false"
-			:border-bottom="false"
-			:background="{ backgroundImage: 'linear-gradient(90deg, rgb(254, 8, 90), rgb(246, 36, 28))' }"
-		></u-navbar> -->
+	<view id="user">
+		<view :style="[bgImage, bgPosition]"></view>
 		<view class="user_wrap">
 			<view class="user_wrap_box">
-				<navigator :url="hasLogin ? '../set/userinfo' : '../auth/login'">
+				<navigator hover-class="none" :url="hasLogin ? '../set/userinfo' : '../auth/login'">
 					<image class="avatar" :src="userInfo.avatarUrl || '/static/icon/default-avatar.png'"></image>
 				</navigator>
 
@@ -17,8 +13,6 @@
 				</view>
 				<navigator v-else class="login_btn" url="../auth/login">登录/注册</navigator>
 			</view>
-			<view v-if="userInfo.avatarUrl" class="bgi" :style="{ backgroundImage: `url(${userInfo.avatarUrl || '/static/bg/user.jpg'})` }"></view>
-			<view v-if="!userInfo.avatarUrl" class="bgc"></view>
 		</view>
 		<!-- 收藏区域 -->
 		<u-card :show-foot="false" :show-head="false" margin="0 20rpx" padding="0">
@@ -127,12 +121,25 @@ export default {
 				{ title: '意见反馈', value: '期待您的建议', iconStyle: { color: '#55aaff' }, icon: 'email-fill' },
 				{ title: '设置', value: '进入设置', iconStyle: { color: '#a5a5a5' }, icon: 'setting-fill' }
 			],
-			historyConut: 0
+			historyConut: 0, // 浏览历史数
+			bgPosition: {
+				position: 'absolute',
+				top: 0,
+				left: 0,
+				height: '100%',
+				width: '100%'
+			} // 背景定位样式
 		};
 	},
 	computed: {
 		...mapState(['userInfo', 'orderCount', 'collectCount']),
-		...mapGetters(['hasLogin'])
+		...mapGetters(['hasLogin']),
+		// 背景图片
+		bgImage() {
+			return this.userInfo.avatarUrl
+				? { backgroundImage: `url(${this.userInfo.avatarUrl})`, filter: 'blur(20px)', backgroundSize: 'cover' }
+				: { backgroundImage: 'linear-gradient(360deg, rgb(254, 8, 90), rgb(233, 59, 61))' };
+		}
 	},
 	onShow() {
 		// 浏览足迹
@@ -160,6 +167,7 @@ export default {
 			} else {
 				this.navTo('contact', { login: true });
 			}
+			console.log(this.userInfo.avatarUrl);
 		},
 		// 浏览历史
 		async getHistoryList() {
@@ -176,6 +184,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#user {
+	min-height: 100vh;
+	overflow: hidden;
+	position: relative;
+	// background-image: linear-gradient(360deg, rgb(254, 8, 90), rgb(233, 59, 61));
+}
+.ccc {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	// background-position: center;
+}
 .user_wrap {
 	// width: 100%;
 	// height: 100%;
@@ -186,7 +208,7 @@ export default {
 	// left: 0;
 	// top: 0;
 	// border-top: 0.5rpx solid #ccc;
-	position: relative;
+	// position: relative;
 	// overflow: hidden;
 	.bgi {
 		width: 100%;
@@ -203,7 +225,7 @@ export default {
 		position: absolute;
 		left: 0;
 		top: 0;
-		background-image: linear-gradient(360deg, rgb(254, 8, 90), rgb(233, 59, 61));
+		// background-image: linear-gradient(360deg, rgb(254, 8, 90), rgb(233, 59, 61));
 	}
 	.user_wrap_box {
 		display: flex;

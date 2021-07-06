@@ -2,7 +2,14 @@
 	<view>
 		<!-- 搜索框 -->
 		<view class="search_row">
-			<u-search placeholder="请输入搜索关键字" v-model="inpValue" @change="handleChange" @custom="handleInput"></u-search>
+			<u-search
+				placeholder="请输入搜索关键字"
+				border-color="#e93b3d"
+				:show-action="false"
+				v-model="inpValue"
+				@change="handleChange"
+				@custom="handleInput"
+			></u-search>
 		</view>
 		<!-- 搜索历史 -->
 		<view class="search_history" v-if="!searchList.length && historyList.length">
@@ -18,7 +25,7 @@
 		<view class="hot_search" v-if="!searchList.length">
 			<view class="hot_title"><u-icon name="heart" label="热门搜索"></u-icon></view>
 			<view class="hot_list">
-				<text @click="handleHistoryBtn(hotxt)" v-for="hotxt in hotList" :key="hotxt">{{hotxt}}</text>
+				<text @click="handleHistoryBtn(hotxt)" v-for="hotxt in hotList" :key="hotxt">{{ hotxt }}</text>
 			</view>
 		</view>
 		<!-- 搜索内容 -->
@@ -38,7 +45,7 @@ export default {
 	data() {
 		return {
 			searchList: [],
-			hotList: ['南极人', '小米', '三星', '外套', '男士','伞'],
+			hotList: ['南极人', '小米', '三星', '外套', '男士', '伞'],
 			historyList: [],
 			inpValue: '',
 			isDelHistory: false
@@ -57,20 +64,10 @@ export default {
 				this.searchList = [];
 				return;
 			}
-			// 发送请求获取搜索建议 数据
-		},
-		// 点击搜索按钮
-		handleInput(e) {
-			const value = e;
-			if (!value.trim()) return this.$util.msg('请先输入关键字');
-			let clonehistoryList = [...this.historyList];
-			clonehistoryList.unshift(value);
-			uni.setStorage({
-				key: 'searchHistory',
-				data: [...new Set(clonehistoryList)]
-			});
-			this.historyList = uni.getStorageSync('searchHistory').slice(0, 20);
-			this.getsearchList(value);
+			// 防抖搜索
+			this.$util.debounce(()=>{
+				this.getsearchList(value);
+			},500)
 		},
 		// 确认删除历史搜索记录
 		handleDeleteHistory() {
@@ -90,7 +87,13 @@ export default {
 			const res = await this.$request({ url: '/shop/goods/list/v2', method: 'post', data: { k: val } });
 			if (res.code !== 0) return this.$util.msg('没有搜索到结果!');
 			this.searchList = res.data.result;
-			console.log(res);
+			let clonehistoryList = [...this.historyList];
+			clonehistoryList.unshift(val);
+			uni.setStorage({
+				key: 'searchHistory',
+				data: [...new Set(clonehistoryList)]
+			});
+			this.historyList = uni.getStorageSync('searchHistory').slice(0, 20);
 		}
 	}
 };
@@ -98,7 +101,7 @@ export default {
 
 <style lang="scss" scoped>
 .search_row {
-	padding: 0 30rpx;
+	padding: 20rpx;
 }
 .search_history {
 	.history_title {

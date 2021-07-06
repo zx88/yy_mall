@@ -73,7 +73,8 @@ export default {
 				page: 1,
 				pageSize: 10,
 				orderBy: 'nameUp',
-				k: ''
+				k: '',
+				recommendStatus: ''
 			},
 			// 总页数
 			totalPage: 1,
@@ -89,6 +90,7 @@ export default {
 	onLoad(options) {
 		this.QueryParams.categoryId = options.id || '';
 		this.QueryParams.k = options.k || '';
+		this.QueryParams.recommendStatus = options.isHot || '';
 		this.getGoodsList();
 	},
 	methods: {

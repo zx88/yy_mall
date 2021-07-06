@@ -96,13 +96,13 @@ var components
 try {
   components = {
     uSearch: function() {
-      return __webpack_require__.e(/*! import() | uview-ui/components/u-search/u-search */ "uview-ui/components/u-search/u-search").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-search/u-search.vue */ 317))
+      return __webpack_require__.e(/*! import() | uview-ui/components/u-search/u-search */ "uview-ui/components/u-search/u-search").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-search/u-search.vue */ 345))
     },
     uIcon: function() {
       return __webpack_require__.e(/*! import() | uview-ui/components/u-icon/u-icon */ "uview-ui/components/u-icon/u-icon").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-icon/u-icon.vue */ 233))
     },
     uModal: function() {
-      return __webpack_require__.e(/*! import() | uview-ui/components/u-modal/u-modal */ "uview-ui/components/u-modal/u-modal").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-modal/u-modal.vue */ 324))
+      return __webpack_require__.e(/*! import() | uview-ui/components/u-modal/u-modal */ "uview-ui/components/u-modal/u-modal").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-modal/u-modal.vue */ 352))
     }
   }
 } catch (e) {
@@ -199,6 +199,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 var _default =
 {
   data: function data() {
@@ -220,23 +227,13 @@ var _default =
                 // 2 检测合法性
                 if (value.trim()) {_context.next = 4;break;}
                 // 值不合法
-                _this.searchList = [];return _context.abrupt("return");case 4:case "end":return _context.stop();}}}, _callee);}))();
+                _this.searchList = [];return _context.abrupt("return");case 4:
 
 
-
-    },
-    // 点击搜索按钮
-    handleInput: function handleInput(e) {
-      var value = e;
-      if (!value.trim()) return this.$util.msg('请先输入关键字');
-      var clonehistoryList = _toConsumableArray(this.historyList);
-      clonehistoryList.unshift(value);
-      uni.setStorage({
-        key: 'searchHistory',
-        data: _toConsumableArray(new Set(clonehistoryList)) });
-
-      this.historyList = uni.getStorageSync('searchHistory').slice(0, 20);
-      this.getsearchList(value);
+                // 防抖搜索
+                _this.$util.debounce(function () {
+                  _this.getsearchList(value);
+                }, 500);case 5:case "end":return _context.stop();}}}, _callee);}))();
     },
     // 确认删除历史搜索记录
     handleDeleteHistory: function handleDeleteHistory() {
@@ -252,11 +249,17 @@ var _default =
       this.getsearchList(e);
     },
     // 获取搜索列表/{domain}/shop/goods/list/v2
-    getsearchList: function getsearchList(val) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var res;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
+    getsearchList: function getsearchList(val) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var res, clonehistoryList;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
                   _this2.$request({ url: '/shop/goods/list/v2', method: 'post', data: { k: val } }));case 2:res = _context2.sent;if (!(
                 res.code !== 0)) {_context2.next = 5;break;}return _context2.abrupt("return", _this2.$util.msg('没有搜索到结果!'));case 5:
                 _this2.searchList = res.data.result;
-                console.log(res);case 7:case "end":return _context2.stop();}}}, _callee2);}))();
+                clonehistoryList = _toConsumableArray(_this2.historyList);
+                clonehistoryList.unshift(val);
+                uni.setStorage({
+                  key: 'searchHistory',
+                  data: _toConsumableArray(new Set(clonehistoryList)) });
+
+                _this2.historyList = uni.getStorageSync('searchHistory').slice(0, 20);case 10:case "end":return _context2.stop();}}}, _callee2);}))();
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

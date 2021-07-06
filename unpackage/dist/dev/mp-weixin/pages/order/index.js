@@ -96,16 +96,19 @@ var components
 try {
   components = {
     uTabsSwiper: function() {
-      return Promise.all(/*! import() | uview-ui/components/u-tabs-swiper/u-tabs-swiper */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uview-ui/components/u-tabs-swiper/u-tabs-swiper")]).then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-tabs-swiper/u-tabs-swiper.vue */ 422))
+      return Promise.all(/*! import() | uview-ui/components/u-tabs-swiper/u-tabs-swiper */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uview-ui/components/u-tabs-swiper/u-tabs-swiper")]).then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-tabs-swiper/u-tabs-swiper.vue */ 443))
     },
     uCard: function() {
-      return __webpack_require__.e(/*! import() | uview-ui/components/u-card/u-card */ "uview-ui/components/u-card/u-card").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-card/u-card.vue */ 247))
+      return __webpack_require__.e(/*! import() | uview-ui/components/u-card/u-card */ "uview-ui/components/u-card/u-card").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-card/u-card.vue */ 317))
+    },
+    uLoadmore: function() {
+      return __webpack_require__.e(/*! import() | uview-ui/components/u-loadmore/u-loadmore */ "uview-ui/components/u-loadmore/u-loadmore").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-loadmore/u-loadmore.vue */ 247))
     },
     uEmpty: function() {
-      return __webpack_require__.e(/*! import() | uview-ui/components/u-empty/u-empty */ "uview-ui/components/u-empty/u-empty").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-empty/u-empty.vue */ 289))
+      return __webpack_require__.e(/*! import() | uview-ui/components/u-empty/u-empty */ "uview-ui/components/u-empty/u-empty").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-empty/u-empty.vue */ 310))
     },
     uModal: function() {
-      return __webpack_require__.e(/*! import() | uview-ui/components/u-modal/u-modal */ "uview-ui/components/u-modal/u-modal").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-modal/u-modal.vue */ 324))
+      return __webpack_require__.e(/*! import() | uview-ui/components/u-modal/u-modal */ "uview-ui/components/u-modal/u-modal").then(__webpack_require__.bind(null, /*! @/uview-ui/components/u-modal/u-modal.vue */ 352))
     }
   }
 } catch (e) {
@@ -237,7 +240,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _vuex = __webpack_require__(/*! vuex */ 15);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var _default =
+
+
+var _vuex = __webpack_require__(/*! vuex */ 15);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _toConsumableArray(arr) {return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();}function _nonIterableSpread() {throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");}function _unsupportedIterableToArray(o, minLen) {if (!o) return;if (typeof o === "string") return _arrayLikeToArray(o, minLen);var n = Object.prototype.toString.call(o).slice(8, -1);if (n === "Object" && o.constructor) n = o.constructor.name;if (n === "Map" || n === "Set") return Array.from(o);if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);}function _iterableToArray(iter) {if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);}function _arrayWithoutHoles(arr) {if (Array.isArray(arr)) return _arrayLikeToArray(arr);}function _arrayLikeToArray(arr, len) {if (len == null || len > arr.length) len = arr.length;for (var i = 0, arr2 = new Array(len); i < len; i++) {arr2[i] = arr[i];}return arr2;}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var _default =
 {
   data: function data() {
     return {
@@ -266,22 +271,27 @@ var _vuex = __webpack_require__(/*! vuex */ 15);function _interopRequireDefault(
       current: 0, // tabs组件的current值，表示当前活动的tab选项
       swiperCurrent: 0, // swiper组件的current值，表示当前那个swiper-item是活动的
       orderDetail: [{ orderList: [] }, { orderList: [] }, { orderList: [] }, { orderList: [] }, { orderList: [] }],
+      // 请求表单
       queryParams: {
-        pagenum: 1,
-        pagesize: 10,
+        page: 1,
+        pageSize: 5,
         status: '' },
 
       // 确认收货提示
       isConfirmDelivery: false,
-      confirmDeliveryInfo: {} };
+      confirmDeliveryInfo: {},
+      // 各订单加载页码
+      pageList: [1, 1, 1, 1, 1],
+      // 底部加载状态
+      loadMore: 'loading' };
 
   },
   onLoad: function onLoad(options) {
-    this.swiperCurrent = options.current;
-    this.getOrderList(options.current);
+    // this.swiperCurrent = options.current;
+    this.getOrderList(0);
   },
   onReady: function onReady() {
-    this.current = this.swiperCurrent;
+    // this.current = this.swiperCurrent;
     // 更新订单数量
     this.$store.dispatch('getOrderCount');
   },
@@ -314,23 +324,50 @@ var _vuex = __webpack_require__(/*! vuex */ 15);function _interopRequireDefault(
                   status = '';
                 }
                 _this.queryParams.status = status;
-                queryParams = _this.queryParams;_context.next = 7;return (
-                  _this.$request({ method: 'post', url: '/order/list', data: _objectSpread(_objectSpread({}, queryParams), {}, { status: status }) }));case 7:res = _context.sent;
-                orderObj = {};if (!(
-                res.code === 0)) {_context.next = 14;break;}
-                orderObj = res.data;
-                _this.$set(_this.orderDetail, index, orderObj);
-                console.log(_this.orderDetail[index]);return _context.abrupt("return");case 14:case "end":return _context.stop();}}}, _callee);}))();
+                _this.queryParams.page = 1;
+                queryParams = _this.queryParams;_context.next = 8;return (
+                  _this.$request({ method: 'post', url: '/order/list', data: _objectSpread(_objectSpread({}, queryParams), {}, { status: status }) }));case 8:res = _context.sent;
+                orderObj = {};
+                if (res.code === 0) {
+                  orderObj = res.data;
+                  _this.$set(_this.orderDetail, index, orderObj);
+                }case 11:case "end":return _context.stop();}}}, _callee);}))();
+    },
+    // 追加更多订单列表
+    upOrderList: function upOrderList(index) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var status, queryParams, res, orderObj;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:
+                index = index || 0;
+                status = '';
+                if (index == 1) {
+                  status = 0;
+                } else if (index == 2) {
+                  status = 1;
+                } else if (index == 3) {
+                  status = 2;
+                } else if (index == 4) {
+                  status = 3;
+                } else {
+                  status = '';
+                }
+                _this2.queryParams.status = status;
+                queryParams = _this2.queryParams;_context2.next = 7;return (
+                  _this2.$request({ method: 'post', url: '/order/list', data: _objectSpread(_objectSpread({}, queryParams), {}, { status: status }) }));case 7:res = _context2.sent;
+                if (res.code === 0) {
+                  orderObj = {
+                    goodsMap: _objectSpread(_objectSpread({}, _this2.orderDetail[index].goodsMap), res.data.goodsMap),
+                    logisticsMap: _objectSpread(_objectSpread({}, _this2.orderDetail[index].logisticsMap), res.data.logisticsMap),
+                    orderList: [].concat(_toConsumableArray(_this2.orderDetail[index].orderList), _toConsumableArray(res.data.orderList)),
+                    totalPage: res.data.totalPage };
 
-
+                  _this2.$set(_this2.orderDetail, index, orderObj);
+                }case 9:case "end":return _context2.stop();}}}, _callee2);}))();
     },
     // 删除订单
-    deleteOrder: function deleteOrder(id, index) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var res;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
-                  _this2.$request({ method: 'post', url: '/order/delete', data: { orderId: id } }));case 2:res = _context2.sent;
+    deleteOrder: function deleteOrder(id, index) {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var res;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:_context3.next = 2;return (
+                  _this3.$request({ method: 'post', url: '/order/delete', data: { orderId: id } }));case 2:res = _context3.sent;
                 if (res.code === 0) {
-                  _this2.orderDetail[index].orderList = _this2.orderDetail[index].orderList.filter(function (item) {return item.id !== id;});
-                  _this2.$util.msg('删除成功');
-                }case 4:case "end":return _context2.stop();}}}, _callee2);}))();
+                  _this3.orderDetail[index].orderList = _this3.orderDetail[index].orderList.filter(function (item) {return item.id !== id;});
+                  _this3.$util.msg('删除成功');
+                }case 4:case "end":return _context3.stop();}}}, _callee3);}))();
     },
     // 取消订单
     cancelOrder: function cancelOrder(id) {
@@ -347,17 +384,17 @@ var _vuex = __webpack_require__(/*! vuex */ 15);function _interopRequireDefault(
       this.confirmDeliveryInfo = { orderId: id, index: i };
     },
     //点击确认收货提示框中确认按钮
-    confirmDelivery: function confirmDelivery() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var orderId, index, res;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:
-                orderId = _this3.confirmDeliveryInfo.orderId;
-                index = _this3.confirmDeliveryInfo.index;_context3.next = 4;return (
-                  _this3.$request({ method: 'post', url: '/order/delivery', data: { orderId: orderId } }));case 4:res = _context3.sent;
+    confirmDelivery: function confirmDelivery() {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {var orderId, index, res;return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:
+                orderId = _this4.confirmDeliveryInfo.orderId;
+                index = _this4.confirmDeliveryInfo.index;_context4.next = 4;return (
+                  _this4.$request({ method: 'post', url: '/order/delivery', data: { orderId: orderId } }));case 4:res = _context4.sent;
                 if (res.code === 0) {
                   // this.orderDetail[index].orderList = this.orderDetail[index].orderList.filter(item => item.id !== orderId)
-                  _this3.$util.msg('确认收货成功');
-                  _this3.getOrderList(index);
+                  _this4.$util.msg('确认收货成功');
+                  _this4.getOrderList(index);
                   // 更新订单数量
-                  _this3.$store.dispatch('getOrderCount');
-                }case 6:case "end":return _context3.stop();}}}, _callee3);}))();
+                  _this4.$store.dispatch('getOrderCount');
+                }case 6:case "end":return _context4.stop();}}}, _callee4);}))();
     },
 
     showRefundAction: function showRefundAction(item) {
@@ -377,14 +414,26 @@ var _vuex = __webpack_require__(/*! vuex */ 15);function _interopRequireDefault(
     animationfinish: function animationfinish(e) {
       var current = e.detail.current;
       this.$refs.uTabs.setFinishCurrent(current);
-      if (this.current !== current) {
-        this.getOrderList(current);
-      }
       this.swiperCurrent = current;
       this.current = current;
+      if (this.orderDetail[current].orderList.length === 0) {
+        this.getOrderList(current);
+        // 更新订单数量
+        this.$store.dispatch('getOrderCount');
+      }
     },
-    // scroll-view到底部加载更多 
-    onreachBottom: function onreachBottom() {} },
+    // scroll-view到底部加载更多
+    onreachBottom: function onreachBottom() {
+      var totalPage = this.orderDetail[this.current].totalPage;
+      if (this.pageList[this.current] >= totalPage) {
+        this.loadMore = 'nomore';
+      } else {
+        this.loadMore = 'loading';
+        this.pageList[this.current]++;
+        this.queryParams.page = this.pageList[this.current];
+        this.upOrderList(this.current);
+      }
+    } },
 
   filters: {
     StatusTxt: function StatusTxt(e) {

@@ -4017,7 +4017,7 @@ var index = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.requests = exports.request = void 0;
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.request = void 0;
 
 var _util = __webpack_require__(/*! ./util.js */ 17);
 
@@ -4039,7 +4039,9 @@ var request = function request() {var params = arguments.length > 0 && arguments
   // 	title: '加载中...'
   // });
   if (ext.login && !(0, _util.isLogin)()) {
-    return { code: 10000 };
+    return {
+      code: 10000 };
+
   }
   params.data = _objectSpread(_objectSpread({},
   params.data), {}, {
@@ -4054,6 +4056,7 @@ var request = function request() {var params = arguments.length > 0 && arguments
         'content-type': 'application/x-www-form-urlencoded' },
 
       success: function success(res) {
+        // console.log(123);
         var code = res.data.code;
         //token无效
         // console.log(res);
@@ -4071,37 +4074,12 @@ var request = function request() {var params = arguments.length > 0 && arguments
         resolve(res.data);
       },
       fail: function fail(err) {
+        (0, _util.msg)("请求接口失败!");
         reject(err);
-      },
-      complete: function complete() {
-        // ajaxTimes--;
-        // if (ajaxTimes === 0) {
-        // 	//  关闭正在等待的图标
-        // uni.hideLoading();
-        // }
       } }));
 
   });
 };exports.request = request;
-
-
-var requests = function requests(params) {
-  var baseUrl = "https://api-hmugo-web.itheima.net/api/public/v1";
-  return new Promise(function (resolve, reject) {
-    uni.request(_objectSpread(_objectSpread({},
-    params), {}, {
-      url: baseUrl + params.url,
-      success: function success(res) {
-        resolve(res.data);
-      },
-      fail: function fail(err) {
-        reject(err);
-      },
-      complete: function complete() {
-      } }));
-
-  });
-};exports.requests = requests;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
@@ -4150,12 +4128,15 @@ var throttle = function throttle(fn) {var delay = arguments.length > 1 && argume
     */exports.throttle = throttle;
 var msg = function msg() {var title = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   if (!title) return;
-  uni.showToast({
-    title: title,
-    duration: param.duration || 1500,
-    mask: param.mask || false,
-    icon: param.icon || 'none' });
+  debounce(function () {
+    console.log(123);
+    uni.showToast({
+      title: title,
+      duration: param.duration || 1500,
+      mask: param.mask || false,
+      icon: param.icon || 'none' });
 
+  }, 500);
 };
 
 /**
@@ -11815,7 +11796,86 @@ trim;exports.default = _default;
 
 /***/ }),
 
-/***/ 357:
+/***/ 36:
+/*!**************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/libs/function/toast.js ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function toast(title) {var duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1500;
+  uni.showToast({
+    title: title,
+    icon: 'none',
+    duration: duration });
+
+}var _default =
+
+toast;exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 37:
+/*!******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/libs/function/getParent.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = getParent; // 获取父组件的参数，因为支付宝小程序不支持provide/inject的写法
+// this.$parent在非H5中，可以准确获取到父组件，但是在H5中，需要多次this.$parent.$parent.xxx
+function getParent(name, keys) {
+  var parent = this.$parent;
+  // 通过while历遍，这里主要是为了H5需要多层解析的问题
+  while (parent) {
+    // 父组件
+    if (parent.$options.name !== name) {
+      // 如果组件的name不相等，继续上一级寻找
+      parent = parent.$parent;
+    } else {var _ret = function () {
+        var data = {};
+        // 判断keys是否数组，如果传过来的是一个数组，那么直接使用数组元素值当做键值去父组件寻找
+        if (Array.isArray(keys)) {
+          keys.map(function (val) {
+            data[val] = parent[val] ? parent[val] : '';
+          });
+        } else {
+          // 历遍传过来的对象参数
+          for (var i in keys) {
+            // 如果子组件有此值则用，无此值则用父组件的值
+            // 判断是否空数组，如果是，则用父组件的值，否则用子组件的值
+            if (Array.isArray(keys[i])) {
+              if (keys[i].length) {
+                data[i] = keys[i];
+              } else {
+                data[i] = parent[i];
+              }
+            } else if (keys[i].constructor === Object) {
+              // 判断是否对象，如果是对象，且有属性，那么使用子组件的值，否则使用父组件的值
+              if (Object.keys(keys[i]).length) {
+                data[i] = keys[i];
+              } else {
+                data[i] = parent[i];
+              }
+            } else {
+              // 只要子组件有传值，即使是false值，也是“传值”了，也需要覆盖父组件的同名参数
+              data[i] = keys[i] || keys[i] === false ? keys[i] : parent[i];
+            }
+          }
+        }
+        return { v: data };}();if (typeof _ret === "object") return _ret.v;
+    }
+  }
+
+  return {};
+}
+
+/***/ }),
+
+/***/ 378:
 /*!*******************************************************************************************************!*\
   !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/components/u-parse/libs/MpHtmlParser.js ***!
   \*******************************************************************************************************/
@@ -11829,9 +11889,9 @@ trim;exports.default = _default;
  * @author JinYufeng
  * @listens MIT
  */
-var cfg = __webpack_require__(/*! ./config.js */ 358),
+var cfg = __webpack_require__(/*! ./config.js */ 379),
 blankChar = cfg.blankChar,
-CssHandler = __webpack_require__(/*! ./CssHandler.js */ 359),
+CssHandler = __webpack_require__(/*! ./CssHandler.js */ 380),
 windowWidth = uni.getSystemInfoSync().windowWidth;
 var emoji;
 
@@ -12406,7 +12466,7 @@ module.exports = MpHtmlParser;
 
 /***/ }),
 
-/***/ 358:
+/***/ 379:
 /*!*************************************************************************************************!*\
   !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/components/u-parse/libs/config.js ***!
   \*************************************************************************************************/
@@ -12496,14 +12556,43 @@ module.exports = cfg;
 
 /***/ }),
 
-/***/ 359:
+/***/ 38:
+/*!****************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/libs/function/$parent.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = $parent; // 获取父组件的参数，因为支付宝小程序不支持provide/inject的写法
+// this.$parent在非H5中，可以准确获取到父组件，但是在H5中，需要多次this.$parent.$parent.xxx
+// 这里默认值等于undefined有它的含义，因为最顶层元素(组件)的$parent就是undefined，意味着不传name
+// 值(默认为undefined)，就是查找最顶层的$parent
+function $parent() {var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
+  var parent = this.$parent;
+  // 通过while历遍，这里主要是为了H5需要多层解析的问题
+  while (parent) {
+    // 父组件
+    if (parent.$options && parent.$options.name !== name) {
+      // 如果组件的name不相等，继续上一级寻找
+      parent = parent.$parent;
+    } else {
+      return parent;
+    }
+  }
+  return false;
+}
+
+/***/ }),
+
+/***/ 380:
 /*!*****************************************************************************************************!*\
   !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/components/u-parse/libs/CssHandler.js ***!
   \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var cfg = __webpack_require__(/*! ./config.js */ 358),
+var cfg = __webpack_require__(/*! ./config.js */ 379),
 isLetter = function isLetter(c) {return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';};
 
 function CssHandler(tagStyle) {
@@ -12606,115 +12695,77 @@ parser.prototype.Content = function () {
 
 /***/ }),
 
-/***/ 36:
-/*!**************************************************************************************!*\
-  !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/libs/function/toast.js ***!
-  \**************************************************************************************/
+/***/ 39:
+/*!************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/libs/function/sys.js ***!
+  \************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function toast(title) {var duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1500;
-  uni.showToast({
-    title: title,
-    icon: 'none',
-    duration: duration });
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.os = os;exports.sys = sys;function os() {
+  return uni.getSystemInfoSync().platform;
+};
 
-}var _default =
-
-toast;exports.default = _default;
+function sys() {
+  return uni.getSystemInfoSync();
+}
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 
-/***/ 37:
-/*!******************************************************************************************!*\
-  !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/libs/function/getParent.js ***!
-  \******************************************************************************************/
+/***/ 4:
+/*!*****************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/pages.json ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
+
+/***/ }),
+
+/***/ 40:
+/*!*****************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/libs/function/debounce.js ***!
+  \*****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = getParent; // 获取父组件的参数，因为支付宝小程序不支持provide/inject的写法
-// this.$parent在非H5中，可以准确获取到父组件，但是在H5中，需要多次this.$parent.$parent.xxx
-function getParent(name, keys) {
-  var parent = this.$parent;
-  // 通过while历遍，这里主要是为了H5需要多层解析的问题
-  while (parent) {
-    // 父组件
-    if (parent.$options.name !== name) {
-      // 如果组件的name不相等，继续上一级寻找
-      parent = parent.$parent;
-    } else {var _ret = function () {
-        var data = {};
-        // 判断keys是否数组，如果传过来的是一个数组，那么直接使用数组元素值当做键值去父组件寻找
-        if (Array.isArray(keys)) {
-          keys.map(function (val) {
-            data[val] = parent[val] ? parent[val] : '';
-          });
-        } else {
-          // 历遍传过来的对象参数
-          for (var i in keys) {
-            // 如果子组件有此值则用，无此值则用父组件的值
-            // 判断是否空数组，如果是，则用父组件的值，否则用子组件的值
-            if (Array.isArray(keys[i])) {
-              if (keys[i].length) {
-                data[i] = keys[i];
-              } else {
-                data[i] = parent[i];
-              }
-            } else if (keys[i].constructor === Object) {
-              // 判断是否对象，如果是对象，且有属性，那么使用子组件的值，否则使用父组件的值
-              if (Object.keys(keys[i]).length) {
-                data[i] = keys[i];
-              } else {
-                data[i] = parent[i];
-              }
-            } else {
-              // 只要子组件有传值，即使是false值，也是“传值”了，也需要覆盖父组件的同名参数
-              data[i] = keys[i] || keys[i] === false ? keys[i] : parent[i];
-            }
-          }
-        }
-        return { v: data };}();if (typeof _ret === "object") return _ret.v;
-    }
-  }
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var timeout = null;
 
-  return {};
-}
+/**
+                                                                                                                         * 防抖原理：一定时间内，只有最后一次操作，再过wait毫秒后才执行函数
+                                                                                                                         * 
+                                                                                                                         * @param {Function} func 要执行的回调函数 
+                                                                                                                         * @param {Number} wait 延时的时间
+                                                                                                                         * @param {Boolean} immediate 是否立即执行 
+                                                                                                                         * @return null
+                                                                                                                         */
+function debounce(func) {var wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 500;var immediate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  // 清除定时器
+  if (timeout !== null) clearTimeout(timeout);
+  // 立即执行，此类情况一般用不到
+  if (immediate) {
+    var callNow = !timeout;
+    timeout = setTimeout(function () {
+      timeout = null;
+    }, wait);
+    if (callNow) typeof func === 'function' && func();
+  } else {
+    // 设置定时器，当最后一次操作后，timeout不会再被清除，所以在延时wait毫秒后执行func回调方法
+    timeout = setTimeout(function () {
+      typeof func === 'function' && func();
+    }, wait);
+  }
+}var _default =
+
+debounce;exports.default = _default;
 
 /***/ }),
 
-/***/ 38:
-/*!****************************************************************************************!*\
-  !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/libs/function/$parent.js ***!
-  \****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = $parent; // 获取父组件的参数，因为支付宝小程序不支持provide/inject的写法
-// this.$parent在非H5中，可以准确获取到父组件，但是在H5中，需要多次this.$parent.$parent.xxx
-// 这里默认值等于undefined有它的含义，因为最顶层元素(组件)的$parent就是undefined，意味着不传name
-// 值(默认为undefined)，就是查找最顶层的$parent
-function $parent() {var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
-  var parent = this.$parent;
-  // 通过while历遍，这里主要是为了H5需要多层解析的问题
-  while (parent) {
-    // 父组件
-    if (parent.$options && parent.$options.name !== name) {
-      // 如果组件的name不相等，继续上一级寻找
-      parent = parent.$parent;
-    } else {
-      return parent;
-    }
-  }
-  return false;
-}
-
-/***/ }),
-
-/***/ 381:
+/***/ 402:
 /*!************************************************************************************!*\
   !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/libs/util/emitter.js ***!
   \************************************************************************************/
@@ -12774,7 +12825,7 @@ function _broadcast(componentName, eventName, params) {
 
 /***/ }),
 
-/***/ 382:
+/***/ 403:
 /*!********************************************************************************************!*\
   !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/libs/util/async-validator.js ***!
   \********************************************************************************************/
@@ -14137,11 +14188,11 @@ Schema.warning = warning;
 Schema.messages = messages;var _default =
 
 Schema;exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../../../Program Files/hbilderX/plugins/uniapp-cli/node_modules/node-libs-browser/mock/process.js */ 383)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../../../Program Files/hbilderX/plugins/uniapp-cli/node_modules/node-libs-browser/mock/process.js */ 404)))
 
 /***/ }),
 
-/***/ 383:
+/***/ 404:
 /*!********************************************************!*\
   !*** ./node_modules/node-libs-browser/mock/process.js ***!
   \********************************************************/
@@ -14172,7 +14223,7 @@ exports.binding = function (name) {
     var path;
     exports.cwd = function () { return cwd };
     exports.chdir = function (dir) {
-        if (!path) path = __webpack_require__(/*! path */ 384);
+        if (!path) path = __webpack_require__(/*! path */ 405);
         cwd = path.resolve(dir, cwd);
     };
 })();
@@ -14186,7 +14237,7 @@ exports.features = {};
 
 /***/ }),
 
-/***/ 384:
+/***/ 405:
 /*!***********************************************!*\
   !*** ./node_modules/path-browserify/index.js ***!
   \***********************************************/
@@ -14496,77 +14547,7 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 383)))
-
-/***/ }),
-
-/***/ 39:
-/*!************************************************************************************!*\
-  !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/libs/function/sys.js ***!
-  \************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.os = os;exports.sys = sys;function os() {
-  return uni.getSystemInfoSync().platform;
-};
-
-function sys() {
-  return uni.getSystemInfoSync();
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-
-/***/ 4:
-/*!*****************************************************************!*\
-  !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/pages.json ***!
-  \*****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-
-
-/***/ }),
-
-/***/ 40:
-/*!*****************************************************************************************!*\
-  !*** C:/Users/Administrator/Desktop/uni_app/yy_mall/uview-ui/libs/function/debounce.js ***!
-  \*****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var timeout = null;
-
-/**
-                                                                                                                         * 防抖原理：一定时间内，只有最后一次操作，再过wait毫秒后才执行函数
-                                                                                                                         * 
-                                                                                                                         * @param {Function} func 要执行的回调函数 
-                                                                                                                         * @param {Number} wait 延时的时间
-                                                                                                                         * @param {Boolean} immediate 是否立即执行 
-                                                                                                                         * @return null
-                                                                                                                         */
-function debounce(func) {var wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 500;var immediate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  // 清除定时器
-  if (timeout !== null) clearTimeout(timeout);
-  // 立即执行，此类情况一般用不到
-  if (immediate) {
-    var callNow = !timeout;
-    timeout = setTimeout(function () {
-      timeout = null;
-    }, wait);
-    if (callNow) typeof func === 'function' && func();
-  } else {
-    // 设置定时器，当最后一次操作后，timeout不会再被清除，所以在延时wait毫秒后执行func回调方法
-    timeout = setTimeout(function () {
-      typeof func === 'function' && func();
-    }, wait);
-  }
-}var _default =
-
-debounce;exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 404)))
 
 /***/ }),
 

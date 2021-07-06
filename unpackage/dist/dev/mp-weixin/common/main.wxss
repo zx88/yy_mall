@@ -64,9 +64,17 @@ image {
 	display: block;
 	width: 100%;
 }
-text{
+text {
 	line-height: 1;
 	/* font-family: Helvetica Neue, Helvetica, sans-serif; */
+}
+ ::-webkit-scrollbar {
+	display: none;
+	width: 0;
+	height: 0;
+}
+.left {
+	float: left;
 }
 .u-relative,
 .u-rela {

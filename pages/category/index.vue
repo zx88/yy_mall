@@ -20,7 +20,7 @@
 						<text class="title">{{ item.name }}</text>
 					</view>
 					<view class="goods_list">
-						<navigator v-for="(item2, index2) in item.children" :key="index2" :url="`/pages/goods_list/index?id=${item2.id}`">
+						<navigator hover-class="none" v-for="(item2, index2) in item.children" :key="index2" :url="`/pages/goods_list/index?id=${item2.id}`">
 							<image mode="widthFix" :src="item2.icon"></image>
 							<view class="goods_name">{{ item2.name }}</view>
 						</navigator>

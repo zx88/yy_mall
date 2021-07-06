@@ -44,6 +44,9 @@
 .swiper_item.data-v-0ca91b30 {
   height: 100%;
 }
+.order.data-v-0ca91b30 {
+  overflow: hidden;
+}
 .order .item.data-v-0ca91b30 {
   display: -webkit-box;
   display: -webkit-flex;

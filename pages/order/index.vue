@@ -14,7 +14,7 @@
 			</view>
 			<swiper class="swiper_box" :current="swiperCurrent" @transition="transition" @animationfinish="animationfinish">
 				<swiper-item class="swiper_item" v-for="(res, i) in orderDetail" :key="i">
-					<scroll-view v-if="orderDetail[i].orderList.length" scroll-y style="height: 100%;width: 100%;" @scrolltolower="onreachBottom">
+					<scroll-view v-if="orderDetail[i].orderList.length" scroll-y style="height: 100%;" @scrolltolower="onreachBottom">
 						<view class="page-box">
 							<view class="order" v-for="(item, index) in res.orderList" :key="item.id">
 								<u-card
@@ -26,7 +26,9 @@
 								>
 									<view slot="body">
 										<view class="item" v-for="(item2, index2) in res.goodsMap[item.id]" :key="item2.id">
-											<view class="left" @click="navTo('../goods_detail/index?id='+item2.goodsId)"><image :src="item2.pic" mode="aspectFill"></image></view>
+											<view class="left" @click="navTo('../goods_detail/index?id=' + item2.goodsId)">
+												<image :src="item2.pic" mode="aspectFill"></image>
+											</view>
 											<view class="content">
 												<view class="title u-line-2">{{ item2.goodsName }}</view>
 												<view class="type">{{ item2.property }}</view>
@@ -60,8 +62,8 @@
 									</view>
 								</u-card>
 							</view>
-							<!-- <u-loadmore :status="loadStatus[0]" bgColor="#f2f2f2"></u-loadmore> -->
 						</view>
+						<u-loadmore v-if="res.totalPage > 1" :status="loadMore" margin-bottom="25" />
 					</scroll-view>
 					<view v-else style="height: 100%;" class="cart_empty"><u-empty text="暂时没有数据" mode="order"></u-empty></view>
 				</swiper-item>
@@ -102,22 +104,27 @@ export default {
 			current: 0, // tabs组件的current值，表示当前活动的tab选项
 			swiperCurrent: 0, // swiper组件的current值，表示当前那个swiper-item是活动的
 			orderDetail: [{ orderList: [] }, { orderList: [] }, { orderList: [] }, { orderList: [] }, { orderList: [] }],
+			// 请求表单
 			queryParams: {
-				pagenum: 1,
-				pagesize: 10,
+				page: 1,
+				pageSize: 5,
 				status: ''
 			},
 			// 确认收货提示
 			isConfirmDelivery: false,
-			confirmDeliveryInfo: {}
+			confirmDeliveryInfo: {},
+			// 各订单加载页码
+			pageList: [1, 1, 1, 1, 1],
+			// 底部加载状态
+			loadMore: 'loading'
 		};
 	},
 	onLoad(options) {
-		this.swiperCurrent = options.current;
-		this.getOrderList(options.current);
+		// this.swiperCurrent = options.current;
+		this.getOrderList(0);
 	},
 	onReady() {
-		this.current = this.swiperCurrent;
+		// this.current = this.swiperCurrent;
 		// 更新订单数量
 		this.$store.dispatch('getOrderCount');
 	},
@@ -150,14 +157,41 @@ export default {
 				status = '';
 			}
 			this.queryParams.status = status;
+			this.queryParams.page = 1;
 			const queryParams = this.queryParams;
 			const res = await this.$request({ method: 'post', url: '/order/list', data: { ...queryParams, status: status } });
-			var orderObj = {};
+			orderObj = {};
 			if (res.code === 0) {
-				orderObj = res.data;
+				var orderObj = res.data;
 				this.$set(this.orderDetail, index, orderObj);
-				console.log(this.orderDetail[index]);
-				return;
+			}
+		},
+		// 追加更多订单列表
+		async upOrderList(index) {
+			index = index || 0;
+			let status = '';
+			if (index == 1) {
+				status = 0;
+			} else if (index == 2) {
+				status = 1;
+			} else if (index == 3) {
+				status = 2;
+			} else if (index == 4) {
+				status = 3;
+			} else {
+				status = '';
+			}
+			this.queryParams.status = status;
+			const queryParams = this.queryParams;
+			const res = await this.$request({ method: 'post', url: '/order/list', data: { ...queryParams, status: status } });
+			if (res.code === 0) {
+				var orderObj = {
+					goodsMap: { ...this.orderDetail[index].goodsMap, ...res.data.goodsMap },
+					logisticsMap: { ...this.orderDetail[index].logisticsMap, ...res.data.logisticsMap },
+					orderList: [...this.orderDetail[index].orderList, ...res.data.orderList],
+					totalPage: res.data.totalPage
+				};
+				this.$set(this.orderDetail, index, orderObj);
 			}
 		},
 		// 删除订单
@@ -213,14 +247,26 @@ export default {
 		animationfinish(e) {
 			let current = e.detail.current;
 			this.$refs.uTabs.setFinishCurrent(current);
-			if(this.current !== current){
-				this.getOrderList(current);
-			}
 			this.swiperCurrent = current;
 			this.current = current;
+			if (this.orderDetail[current].orderList.length === 0) {
+				this.getOrderList(current);
+				// 更新订单数量
+				this.$store.dispatch('getOrderCount');
+			}
 		},
-		// scroll-view到底部加载更多 
-		onreachBottom() {}
+		// scroll-view到底部加载更多
+		onreachBottom() {
+			let totalPage = this.orderDetail[this.current].totalPage;
+			if (this.pageList[this.current] >= totalPage) {
+				this.loadMore = 'nomore';
+			} else {
+				this.loadMore = 'loading';
+				this.pageList[this.current]++;
+				this.queryParams.page = this.pageList[this.current];
+				this.upOrderList(this.current);
+			}
+		}
 	},
 	filters: {
 		StatusTxt(e) {
@@ -254,6 +300,7 @@ export default {
 	height: 100%;
 }
 .order {
+	overflow: hidden;
 	.item {
 		display: flex;
 		margin-bottom: 30rpx;

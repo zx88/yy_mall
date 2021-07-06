@@ -20,7 +20,9 @@ export const request = (params = {}, ext = {}) => {
 	// 	title: '加载中...'
 	// });
 	if (ext.login && !isLogin()) {
-		return {code: 10000};
+		return {
+			code: 10000
+		};
 	}
 	params.data = {
 		...params.data,
@@ -35,6 +37,7 @@ export const request = (params = {}, ext = {}) => {
 				'content-type': 'application/x-www-form-urlencoded'
 			},
 			success(res) {
+				// console.log(123);
 				const code = res.data.code;
 				//token无效
 				// console.log(res);
@@ -52,33 +55,8 @@ export const request = (params = {}, ext = {}) => {
 				resolve(res.data)
 			},
 			fail(err) {
+				msg("请求接口失败!");
 				reject(err)
-			},
-			complete() {
-				// ajaxTimes--;
-				// if (ajaxTimes === 0) {
-				// 	//  关闭正在等待的图标
-				// uni.hideLoading();
-				// }
-			}
-		})
-	})
-}
-
-
-export const requests = (params) => {
-	const baseUrl = "https://api-hmugo-web.itheima.net/api/public/v1";
-	return new Promise((resolve, reject) => {
-		uni.request({
-			...params,
-			url: baseUrl + params.url,
-			success(res) {
-				resolve(res.data)
-			},
-			fail(err) {
-				reject(err)
-			},
-			complete() {
 			}
 		})
 	})

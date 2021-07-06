@@ -1,92 +1,163 @@
 <template>
 	<view>
-		<!-- 导航栏 -->
-		<u-navbar :is-back="false" :border-bottom="false" :background="{ backgroundColor: '#8b8dff' }">
-			<view class="navbar_box">
+		<!-- 自定义导航栏 -->
+		<nav-bar :isBack="false" :background="{ background: '#8b8dff' }">
+			<view class="navbar_wrap">
 				<view class="nav_notify">
 					<navigator url="/pages/notify/index"><u-icon name="chat"></u-icon></navigator>
 				</view>
-				<view class="nav_search">
-					<search></search>
-				</view>
+				<view class="nav_search"><search></search></view>
 			</view>
-		</u-navbar>
-		<Loading v-if="!swiperList.length"></Loading>
-		<view v-else class="home_content">
+		</nav-bar>
+		<view class="container u-skeleton">
 			<view class="top_box">
-				<!-- 轮播 -->
-				<u-swiper
-					bg-color="rgba(234, 66, 0, 0)"
-					:list="swiperList"
-					:effect3d="true"
-					mode="round"
-					name="picUrl"
-					@click="handleSwiper"
-				></u-swiper>
+				<!-- 轮播图 -->
+				<view class="swiper u-skeleton-fillet">
+					<u-swiper bg-color="rgba(0, 0, 0, 0)" :list="swiperList" :effect3d="true" mode="round" name="picUrl" @click="handleSwiper"></u-swiper>
+				</view>
 				<!-- 分类导航 -->
-				<u-card :show-foot="false" :show-head="false" margin="20rpx" padding="10">
-					<scroll-view class="cate" slot="body" scroll-x="true">
-						<!--内容区域-->
-						<navigator v-for="item in catesList[0]" :key="item.name" open-type="switchTab" :url="`../category/index`">
-							<image mode="widthFix" :src="item.icon"></image>
-							<text>{{ item.name }}</text>
-						</navigator>
-						<view></view>
-						<navigator v-for="item2 in catesList[1]" :key="item2.name" open-type="switchTab" :url="`../category/index`">
-							<image mode="widthFix" :src="item2.icon"></image>
-							<text>{{ item2.name }}</text>
-						</navigator>
-					</scroll-view>
-				</u-card>
+				<scroll-view :show-scrollbar="false" class="menu_wrap" scroll-x="true">
+					<navigator v-for="item in catesList[0] || 10" :key="item.name" open-type="switchTab" :url="`../category/index`">
+						<image class="u-skeleton-circle" :src="item.icon"></image>
+						<view class="txt u-skeleton-fillet">{{ item.name || '...' }}</view>
+					</navigator>
+					<view></view>
+					<navigator v-for="item2 in catesList[1] || 10" :key="item2.name" open-type="switchTab" :url="`../category/index`">
+						<image class="u-skeleton-circle" :src="item2.icon"></image>
+						<view class="txt u-skeleton-fillet">{{ item2.name || '...' }}</view>
+					</navigator>
+				</scroll-view>
 			</view>
 			<!-- 推荐 -->
-			<u-card :show-foot="false" :show-head="false" margin="20rpx" padding="10">
-				<view slot="body" class="index_floor">
-					<view class="floor_group" v-for="(item, index) in floorList" :key="index">
-						<view class="floor_title"><image mode="widthFix" :src="item.floor_title.image_src"></image></view>
-						<view class="floor_list">
-							<navigator
-								v-for="(item2, index2) in item.product_list"
-								:key="index2"
-								:url="'/pages/goods_list/index?k=' + item2.navigator_url"
-							>
-								<image :mode="index2 === 0 ? 'widthFix' : 'scaleToFill'" :src="item2.image_src"></image>
-							</navigator>
-						</view>
+			<view class="floor_wrap">
+				<view id="floor" class="floor_header_box" :style="{ top: statusBarHeight + 44 + 'px' }">
+					<view class="floor_header u-skeleton-fillet" @click="navTo(`/pages/goods_list/index?isHot=1`)">
+						<u-icon
+							size="40rpx"
+							color="#e93b3d"
+							:custom-style="{ fontWeight: '800' }"
+							label-size="32rpx"
+							label-color="#000"
+							label="热门推荐"
+							name="integral"
+						></u-icon>
+						<u-icon name="arrow-right" size="32rpx"></u-icon>
 					</view>
 				</view>
-			</u-card>
+				<goods-list :goods-list="floorList"></goods-list>
+			</view>
+			<u-loadmore v-if="totalPage > 1" :status="loadMore" margin-bottom="25" />
 		</view>
+		<!--引用组件-->
+		<u-skeleton :loading="loading" :animation="true" bgColor="#FFF"></u-skeleton>
 	</view>
 </template>
 
 <script>
-	import Search from '../../components/content/Search.vue'
+import NavBar from '@/components/common/navbar/Navbar.vue';
+import Search from '../../components/content/Search.vue';
+import GoodsList from '../../components/content/GoodsList.vue';
+
+// 获取系统状态栏的高度
+let systemInfo = uni.getSystemInfoSync();
 export default {
-	components:{
-		Search
+	components: {
+		Search,
+		GoodsList,
+		NavBar
 	},
 	data() {
 		return {
-			// 轮播图数组
+			// 轮播图列表
 			swiperList: [],
+			// 导航栏列表
 			catesList: [],
-			floorList: []
+			//热门推荐列表
+			floorList: [],
+			// 热门推荐请求参数
+			QueryParams: {
+				page: 1,
+				pageSize: 4,
+				orderBy: 'nameUp',
+				recommendStatus: '1'
+			},
+			// 总页数
+			totalPage: 1,
+			// 底部加载状态
+			loadMore: 'loading',
+
+			message: '',
+			show: false,
+
+			statusBarHeight: systemInfo.statusBarHeight, //状态栏高度
+			isHotFixed: false, //固定热门推荐标题
+			hotScroll: 0 //滚动距离
 		};
 	},
-	mounted() {
+	computed: {
+		// 是否显示骨架屏
+		loading() {
+			return !this.swiperList.length > 0 && !this.catesList.length > 0;
+			// return true;
+		}
+		// fixed() {
+		// 	return this.isHotFixed
+		// 		? { position: 'fixed', zIndex: '9', left: 0, top: this.statusBarHeight + 44 + 'px', width: '100%', height: '80rpx' }
+		// 		: '';
+		// }
+	},
+	onLoad() {
 		this.getSwiperList();
 		this.getCateList();
 		this.getFloorList();
 	},
+	onReady() {
+		// let stop = 0;
+		// const query = uni.createSelectorQuery();
+		// query
+		// 	.select('#floor')
+		// 	.boundingClientRect(data => {
+		// 		stop = data.top;
+		// 		this.hotScroll = stop - this.statusBarHeight - 44;
+		// 	})
+		// 	.exec();
+		// uni
+		// 	.createIntersectionObserver(this)
+		// 	.relativeTo('.navbar_wrap', { bottom: 0 })
+		// 	.observe('.floor_header_box', res => {
+		// 		this.isHotFixed = true;
+		// 		console.log(res);
+		// 	});
+	},
+	onReachBottom() {
+		if (this.QueryParams.page >= this.totalPage) {
+			this.loadMore = 'nomore';
+		} else {
+			this.loadMore = 'loading';
+			this.QueryParams.page++;
+			this.getFloorList();
+		}
+	},
+	// 滚动吸顶,有延迟
+	// onPageScroll(e) {
+	// var scrollTop = e.scrollTop;
+	// var isSatisfy = scrollTop >= this.hotScroll;
+	// console.log(isSatisfy);
+	// // 只有处于吸顶的临界值才会不相等
+	// if (this.isHotFixed == isSatisfy) {
+	// 	return;
+	// } else {
+	// 	this.isHotFixed = isSatisfy;
+	// }
+	// },
 	methods: {
 		// 获取轮播
 		async getSwiperList() {
 			const res = await this.$request({ url: '/banner/list' });
-			if (res.code !== 0) return this.$util.msg('获取轮播失败');
+			if (res.code !== 0) return this.$util.msg(res.msg);
 			this.swiperList = res.data;
 		},
-		// 点击轮播跳转
+		// 点击轮播图
 		handleSwiper(index) {
 			if (index === 0) {
 				uni.navigateTo({
@@ -108,9 +179,8 @@ export default {
 		// 获取分类导航
 		async getCateList() {
 			const res = await this.$request({ url: '/shop/goods/category/all' });
+			if (res.code !== 0) return this.$util.msg(res.msg);
 			var catesList = res.data.filter(v => v.pid == 0);
-			console.log(catesList);
-			if (res.code !== 0) return this.$util.msg('获取导航数据失败');
 			let toplist = [];
 			let bottomlist = [];
 			catesList.forEach((v, i) => {
@@ -123,95 +193,65 @@ export default {
 			this.$set(this.catesList, 0, toplist.slice(0, 9));
 			this.$set(this.catesList, 1, bottomlist.slice(0, 9));
 		},
-		// 获取楼层数据
+		// 获取推荐列表
 		async getFloorList() {
-			const res = await this.$requests({ url: '/home/floordata' });
-			if (res.meta.status !== 200) return this.$util.msg('获取商品列表失败');
-			this.floorList = res.message;
-			//提取汉字
-			this.floorList.forEach((v, i) => {
-				v.product_list.forEach((v2, i2) => {
-					v2.navigator_url = v2.navigator_url.replace(/[^\u4e00-\u9fa5]/gi, '');
-				});
-			});
+			const res = await this.$request({ method: 'post', url: '/shop/goods/list/v2', data: this.QueryParams });
+			if (res.code !== 0) return this.$util.msg(res.msg);
+			this.totalPage = res.data.totalPage;
+			this.floorList = [...this.floorList, ...res.data.result];
 		}
 	}
 };
 </script>
 
 <style lang="scss" scoped>
-.navbar_box {
+.navbar_wrap {
 	display: flex;
 	align-items: center;
-	padding: 0 15rpx;
 	flex: 1;
 	.nav_notify {
-		font-size: 55rpx;
-		width: 80rpx;
+		font-size: 28px;
+		flex: 1;
 		text-align: center;
 	}
-	.nav_search{
-		flex: 1;
+	.nav_search {
+		flex: 5;
+		padding-right: 15rpx;
 	}
 }
 .top_box {
-	padding-top: 20rpx;
 	background-image: linear-gradient(180deg, rgb(139, 141, 255), rgb(245, 245, 245));
-	.cate {
+	padding-top: 10rpx;
+	.menu_wrap {
 		white-space: nowrap;
-		height: 280rpx;
+		height: 300rpx;
 		navigator {
 			display: inline-block;
 			text-align: center;
-			width: 139rpx;
-			height: 140rpx;
+			width: 20%;
+			height: 50%;
 			font-size: 26rpx;
-			// padding: 10rpx 15rpx;
+			padding: 10rpx 15rpx;
 			image {
 				width: 110rpx;
-			}
-			text {
-				display: block;
-				text-align: center;
+				height: 90rpx;
 			}
 		}
 	}
 }
-.index_floor {
-	.floor_group {
-		.floor_title {
-			padding: 10rpx 0;
-			image {
-				width: 100%;
-			}
-		}
-		.floor_list {
-			// 清除浮动
-			overflow: hidden;
-			navigator {
-				float: left;
-				width: 33.33%;
-				border-radius: 10rpx;
-				overflow: hidden;
-				/* 后四个超链接 */
-				&:nth-last-child(-n + 4) {
-					/* 原图的宽高 232 *386 */
-					// 232 / 386 = 33.33vw / height
-					// 第一张图片的高度 height:33.33vw * 386 /  232
-					height: calc((33.33vw - 20rpx) * 386 / 232 / 2);
-					border-left: 10rpx solid #fff;
-				}
-				/* 2 3 两个超链接 */
-				&:nth-child(2),
-				&:nth-child(3) {
-					border-bottom: 10rpx solid #fff;
-				}
-				image {
-					width: 100%;
-					height: 100%;
-				}
-			}
-		}
+.floor_wrap {
+	.floor_header_box {
+		width: 100%;
+		height: 80rpx;
+		z-index: 10;
+		position: sticky;
+	}
+	.floor_header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 20rpx 30rpx;
+		background-color: #ffffff;
 	}
 }
 </style>
